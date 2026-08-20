@@ -2,22 +2,26 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8f1118">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Conferência de Carga</title>
+    <title>Conferência de Carga Patrimonial</title>
 
     <style>
         :root {
             --vermelho: #b5121b;
             --vermelho-escuro: #7d0c12;
-            --verde: #16803c;
-            --cinza-claro: #f1f3f5;
-            --cinza: #667085;
-            --texto: #202124;
+            --verde: #14823b;
+            --verde-claro: #e8f7ed;
+            --amarelo: #a45d00;
+            --amarelo-claro: #fff4dc;
+            --azul: #175cd3;
+            --azul-claro: #eaf2ff;
+            --cinza-50: #f7f8fa;
+            --cinza-100: #eef1f4;
+            --cinza-300: #cfd5dc;
+            --cinza-600: #667085;
+            --cinza-900: #202124;
             --branco: #ffffff;
         }
 
@@ -29,54 +33,208 @@
             margin: 0;
             min-height: 100vh;
             padding: 16px;
-            color: var(--texto);
-            background: var(--cinza-claro);
+            color: var(--cinza-900);
+            background: var(--cinza-100);
             font-family: Arial, Helvetica, sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
         }
 
         .aplicacao {
             width: 100%;
-            max-width: 560px;
+            max-width: 760px;
             margin: 0 auto;
         }
 
-        header {
-            margin-bottom: 18px;
+        .cabecalho {
+            padding: 8px 4px 18px;
             text-align: center;
         }
 
-        h1 {
-            margin: 0 0 6px;
+        .cabecalho h1 {
+            margin: 0 0 7px;
             color: var(--vermelho-escuro);
-            font-size: 1.7rem;
+            font-size: clamp(1.55rem, 5vw, 2rem);
         }
 
-        header p {
+        .cabecalho p {
             margin: 0;
-            color: var(--cinza);
+            color: var(--cinza-600);
         }
 
         .cartao {
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 16px;
             background: var(--branco);
+            border: 1px solid #e1e5ea;
             border-radius: 16px;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.09);
+            box-shadow: 0 5px 18px rgba(22, 27, 29, 0.07);
+        }
+
+        .titulo-secao {
+            margin: 0 0 6px;
+            font-size: 1.15rem;
+        }
+
+        .texto-apoio {
+            margin: 0 0 14px;
+            color: var(--cinza-600);
+            line-height: 1.45;
+        }
+
+        .entrada-arquivo {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        .botao,
+        .rotulo-arquivo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+        }
+
+        .botao:active,
+        .rotulo-arquivo:active {
+            transform: scale(0.98);
+        }
+
+        .botao:disabled {
+            cursor: not-allowed;
+            opacity: 0.46;
+        }
+
+        .primario,
+        .rotulo-arquivo {
+            color: var(--branco);
+            background: var(--vermelho);
+        }
+
+        .primario:hover:not(:disabled),
+        .rotulo-arquivo:hover {
+            background: var(--vermelho-escuro);
+        }
+
+        .secundario {
+            color: var(--cinza-900);
+            background: #e5e9ee;
+        }
+
+        .sucesso-botao {
+            color: var(--branco);
+            background: var(--verde);
+        }
+
+        .acoes-arquivo,
+        .acoes-camera,
+        .acoes-resultado {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .rotulo-arquivo {
+            grid-column: 1 / -1;
+        }
+
+        .arquivo-info {
+            padding: 12px;
+            margin-top: 14px;
+            color: var(--cinza-600);
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-300);
+            border-radius: 10px;
+            line-height: 1.45;
+        }
+
+        .arquivo-info.ok {
+            color: #0d5f2a;
+            background: var(--verde-claro);
+            border-color: #a8ddb8;
+        }
+
+        .arquivo-info.alerta {
+            color: #794600;
+            background: var(--amarelo-claro);
+            border-color: #efcf91;
+        }
+
+        .arquivo-info.erro {
+            color: #8a1118;
+            background: #fff0f1;
+            border-color: #e6aeb2;
+        }
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+            gap: 10px;
+        }
+
+        .indicador {
+            min-height: 90px;
+            padding: 12px;
+            background: var(--cinza-50);
+            border: 1px solid #e0e5ea;
+            border-radius: 12px;
+        }
+
+        .indicador span {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--cinza-600);
+            font-size: 0.82rem;
+        }
+
+        .indicador strong {
+            display: block;
+            font-size: 1.65rem;
+        }
+
+        .indicador.localizados strong {
+            color: var(--verde);
+        }
+
+        .indicador.pendentes strong {
+            color: var(--vermelho);
+        }
+
+        .indicador.repetidas strong {
+            color: var(--amarelo);
+        }
+
+        .indicador.desconhecidas strong {
+            color: var(--azul);
         }
 
         .visualizador {
             position: relative;
             width: 100%;
-            min-height: 320px;
+            min-height: 330px;
             overflow: hidden;
             background: #111111;
-            border-radius: 12px;
+            border-radius: 13px;
         }
 
         video {
             display: block;
             width: 100%;
-            min-height: 320px;
+            min-height: 330px;
             object-fit: cover;
         }
 
@@ -84,22 +242,22 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 230px;
-            height: 230px;
-            border: 4px solid rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
+            width: min(64vw, 250px);
+            height: min(64vw, 250px);
+            border: 3px solid rgba(255, 255, 255, 0.88);
+            border-radius: 20px;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.24);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
             pointer-events: none;
         }
 
         .guia::before,
         .guia::after {
             position: absolute;
+            width: 42px;
+            height: 42px;
             content: "";
-            width: 38px;
-            height: 38px;
-            border-color: #38ef7d;
+            border-color: #3bea7b;
             border-style: solid;
         }
 
@@ -107,116 +265,252 @@
             top: -5px;
             left: -5px;
             border-width: 6px 0 0 6px;
-            border-radius: 14px 0 0;
+            border-radius: 16px 0 0;
         }
 
         .guia::after {
             right: -5px;
             bottom: -5px;
             border-width: 0 6px 6px 0;
-            border-radius: 0 0 14px;
+            border-radius: 0 0 16px;
         }
 
-        .status {
-            min-height: 24px;
+        .status-camera {
+            min-height: 26px;
             margin: 14px 0;
-            color: var(--cinza);
+            color: var(--cinza-600);
             text-align: center;
         }
 
-        .status.sucesso {
+        .status-camera.ok {
             color: var(--verde);
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        .status.erro {
+        .status-camera.alerta {
+            color: var(--amarelo);
+            font-weight: 700;
+        }
+
+        .status-camera.erro {
             color: var(--vermelho);
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        .botoes {
+        .opcoes {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            padding: 12px;
+            margin: 14px 0;
+            background: var(--cinza-50);
+            border-radius: 10px;
         }
 
-        button,
-        .link-botao {
-            min-height: 48px;
-            padding: 12px 14px;
-            border: 0;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
+        .opcao {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 34px;
             cursor: pointer;
         }
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
+        .opcao input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--vermelho);
         }
 
-        .primario {
-            color: var(--branco);
-            background: var(--vermelho);
+        .ultimo-resultado {
+            min-height: 106px;
+            padding: 15px;
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-300);
+            border-left: 6px solid var(--cinza-300);
+            border-radius: 11px;
         }
 
-        .secundario {
-            color: var(--texto);
-            background: #e4e7ec;
+        .ultimo-resultado.ok {
+            background: var(--verde-claro);
+            border-color: #a8ddb8;
+            border-left-color: var(--verde);
         }
 
-        #botao-lanterna {
-            grid-column: 1 / -1;
+        .ultimo-resultado.alerta {
+            background: var(--amarelo-claro);
+            border-color: #efcf91;
+            border-left-color: var(--amarelo);
         }
 
-        .resultado-titulo {
-            margin: 0 0 10px;
-            font-size: 1.1rem;
+        .ultimo-resultado.erro {
+            background: #fff0f1;
+            border-color: #e6aeb2;
+            border-left-color: var(--vermelho);
         }
 
-        #resultado {
-            min-height: 60px;
-            padding: 14px;
-            margin-bottom: 14px;
-            overflow-wrap: anywhere;
-            background: var(--cinza-claro);
-            border: 1px solid #d0d5dd;
-            border-radius: 10px;
-            white-space: pre-wrap;
-        }
-
-        .link-botao {
+        .ultimo-resultado strong,
+        .ultimo-resultado span {
             display: block;
-            margin-top: 10px;
-            color: var(--branco);
-            text-align: center;
-            text-decoration: none;
-            background: var(--verde);
         }
 
-        [hidden] {
-            display: none !important;
+        .ultimo-resultado span {
+            margin-top: 6px;
+            color: var(--cinza-600);
+            line-height: 1.4;
+        }
+
+        .cabecalho-historico {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .cabecalho-historico h2 {
+            margin: 0;
+        }
+
+        .botao-pequeno {
+            min-height: 38px;
+            padding: 8px 11px;
+            border: 0;
+            border-radius: 9px;
+            color: var(--cinza-900);
+            background: #e5e9ee;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .historico {
+            display: grid;
+            gap: 9px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+
+        .historico-vazio {
+            padding: 20px;
+            color: var(--cinza-600);
+            text-align: center;
+            background: var(--cinza-50);
+            border-radius: 10px;
+        }
+
+        .leitura {
+            padding: 12px;
+            background: var(--cinza-50);
+            border-left: 5px solid var(--cinza-300);
+            border-radius: 9px;
+        }
+
+        .leitura.localizado {
+            border-left-color: var(--verde);
+        }
+
+        .leitura.repetido {
+            border-left-color: var(--amarelo);
+        }
+
+        .leitura.desconhecido {
+            border-left-color: var(--vermelho);
+        }
+
+        .leitura.desfeito {
+            border-left-color: var(--azul);
+        }
+
+        .leitura-topo {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .leitura small,
+        .leitura p {
+            color: var(--cinza-600);
+        }
+
+        .leitura p {
+            margin: 5px 0 0;
+            line-height: 1.35;
+        }
+
+        dialog {
+            width: min(92vw, 520px);
+            padding: 0;
+            border: 0;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.62);
+        }
+
+        .dialogo-conteudo {
+            padding: 20px;
+        }
+
+        .dialogo-conteudo h2 {
+            margin: 0 0 8px;
+        }
+
+        .dialogo-conteudo p {
+            color: var(--cinza-600);
+        }
+
+        .opcoes-duplicidade {
+            display: grid;
+            gap: 9px;
+            margin: 16px 0;
+        }
+
+        .opcao-duplicidade {
+            width: 100%;
+            padding: 12px;
+            color: var(--cinza-900);
+            text-align: left;
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-300);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .opcao-duplicidade strong,
+        .opcao-duplicidade span {
+            display: block;
+        }
+
+        .opcao-duplicidade span {
+            margin-top: 5px;
+            color: var(--cinza-600);
         }
 
         footer {
-            color: var(--cinza);
+            padding: 4px 0 16px;
+            color: var(--cinza-600);
             font-size: 0.85rem;
             text-align: center;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 540px) {
             body {
                 padding: 10px;
             }
 
             .cartao {
-                padding: 12px;
+                padding: 14px;
             }
 
-            .guia {
-                width: 210px;
-                height: 210px;
+            .acoes-camera,
+            .acoes-resultado {
+                grid-template-columns: 1fr;
+            }
+
+            .visualizador,
+            video {
+                min-height: 300px;
             }
         }
     </style>
@@ -224,140 +518,655 @@
 
 <body>
     <main class="aplicacao">
-        <header>
-            <h1>Conferência de Carga</h1>
-            <p>Leitura otimizada de QR Code</p>
+        <header class="cabecalho">
+            <h1>Conferência de Carga Patrimonial</h1>
+            <p>Importação local da planilha e leitura por QR Code</p>
         </header>
 
         <section class="cartao">
-            <div class="visualizador">
-                <video
-                    id="video"
-                    playsinline
-                    muted
-                ></video>
+            <h2 class="titulo-secao">1. Carregar a planilha</h2>
+            <p class="texto-apoio">
+                Selecione a planilha no Google Drive, em Downloads ou nos arquivos do celular.
+                Os dados serão processados somente neste aparelho.
+            </p>
 
+            <div class="acoes-arquivo">
+                <label class="rotulo-arquivo" for="arquivo-planilha">
+                    Selecionar planilha
+                </label>
+
+                <input
+                    id="arquivo-planilha"
+                    class="entrada-arquivo"
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                >
+            </div>
+
+            <div id="arquivo-info" class="arquivo-info">
+                Nenhuma planilha carregada.
+            </div>
+        </section>
+
+        <section class="cartao">
+            <h2 class="titulo-secao">Resumo da conferência</h2>
+
+            <div class="resumo">
+                <div class="indicador">
+                    <span>Total previsto</span>
+                    <strong id="total-previsto">0</strong>
+                </div>
+
+                <div class="indicador localizados">
+                    <span>Localizados</span>
+                    <strong id="total-localizados">0</strong>
+                </div>
+
+                <div class="indicador pendentes">
+                    <span>Pendentes</span>
+                    <strong id="total-pendentes">0</strong>
+                </div>
+
+                <div class="indicador repetidas">
+                    <span>Repetições</span>
+                    <strong id="total-repetidas">0</strong>
+                </div>
+
+                <div class="indicador desconhecidas">
+                    <span>Não cadastrados</span>
+                    <strong id="total-desconhecidas">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="cartao">
+            <h2 class="titulo-secao">2. Ler os QR Codes</h2>
+            <p class="texto-apoio">
+                O QR Code deve conter o número da coluna PATRIMONIO, com ou sem hífen.
+            </p>
+
+            <div class="visualizador">
+                <video id="video" playsinline muted></video>
                 <div class="guia" aria-hidden="true"></div>
             </div>
 
-            <p
-                id="status"
-                class="status"
-                aria-live="polite"
-            >
-                Toque em “Abrir câmera” para iniciar.
+            <p id="status-camera" class="status-camera" aria-live="polite">
+                Carregue uma planilha para liberar a câmera.
             </p>
 
-            <div class="botoes">
-                <button
-                    id="botao-iniciar"
-                    class="primario"
-                    type="button"
-                >
+            <div class="opcoes">
+                <label class="opcao">
+                    <input id="som-ativo" type="checkbox" checked>
+                    Som de feedback
+                </label>
+
+                <label class="opcao">
+                    <input id="ocultar-repetidas" type="checkbox" checked>
+                    Ocultar leituras repetidas no histórico
+                </label>
+            </div>
+
+            <div class="acoes-camera">
+                <button id="botao-iniciar" class="botao primario" type="button" disabled>
                     Abrir câmera
                 </button>
 
-                <button
-                    id="botao-parar"
-                    class="secundario"
-                    type="button"
-                    disabled
-                >
+                <button id="botao-parar" class="botao secundario" type="button" disabled>
                     Parar câmera
                 </button>
 
-                <button
-                    id="botao-lanterna"
-                    class="secundario"
-                    type="button"
-                    hidden
-                >
+                <button id="botao-lanterna" class="botao secundario" type="button" hidden>
                     Ligar lanterna
+                </button>
+
+                <button id="botao-desfazer" class="botao secundario" type="button" disabled>
+                    Desfazer última leitura
                 </button>
             </div>
         </section>
 
         <section class="cartao">
-            <h2 class="resultado-titulo">Conteúdo identificado</h2>
+            <h2 class="titulo-secao">Última leitura</h2>
 
-            <div id="resultado">
-                Nenhum QR Code identificado.
+            <div id="ultimo-resultado" class="ultimo-resultado">
+                <strong>Nenhum QR Code identificado.</strong>
+                <span>O resultado aparecerá aqui.</span>
+            </div>
+        </section>
+
+        <section class="cartao">
+            <div class="cabecalho-historico">
+                <h2 class="titulo-secao">Histórico</h2>
+
+                <button id="botao-limpar-repetidas" class="botao-pequeno" type="button">
+                    Limpar repetições da lista
+                </button>
             </div>
 
-            <button
-                id="botao-copiar"
-                class="secundario"
-                type="button"
-                disabled
-            >
-                Copiar conteúdo
-            </button>
+            <div id="historico" class="historico">
+                <div class="historico-vazio">Nenhuma leitura realizada.</div>
+            </div>
+        </section>
 
-            <a
-                id="botao-abrir"
-                class="link-botao"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                hidden
-            >
-                Abrir endereço
-            </a>
+        <section class="cartao">
+            <h2 class="titulo-secao">3. Finalizar</h2>
+            <p class="texto-apoio">
+                O resultado será gerado em uma nova planilha, incluindo os itens localizados,
+                pendentes, leituras repetidas e códigos não cadastrados.
+            </p>
+
+            <div class="acoes-resultado">
+                <button id="botao-exportar" class="botao sucesso-botao" type="button" disabled>
+                    Exportar resultado em Excel
+                </button>
+
+                <button id="botao-reiniciar" class="botao secundario" type="button" disabled>
+                    Reiniciar conferência
+                </button>
+            </div>
         </section>
 
         <footer>
-            Projeto de conferência por QR Code
+            A planilha é lida localmente e não é enviada ao site.
         </footer>
     </main>
+
+    <dialog id="dialogo-duplicidade">
+        <div class="dialogo-conteudo">
+            <h2>Código duplicado na planilha</h2>
+            <p>
+                O mesmo patrimônio aparece em mais de uma linha. Selecione qual registro está sendo conferido.
+            </p>
+
+            <div id="opcoes-duplicidade" class="opcoes-duplicidade"></div>
+
+            <button id="cancelar-duplicidade" class="botao secundario" type="button">
+                Cancelar
+            </button>
+        </div>
+    </dialog>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
     <script type="module">
         import QrScanner from
             "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
+        const arquivoPlanilha = document.getElementById("arquivo-planilha");
+        const arquivoInfo = document.getElementById("arquivo-info");
+
         const video = document.getElementById("video");
-        const statusElemento = document.getElementById("status");
-        const resultadoElemento = document.getElementById("resultado");
+        const statusCamera = document.getElementById("status-camera");
+        const ultimoResultado = document.getElementById("ultimo-resultado");
+        const historicoElemento = document.getElementById("historico");
 
-        const botaoIniciar =
-            document.getElementById("botao-iniciar");
+        const botaoIniciar = document.getElementById("botao-iniciar");
+        const botaoParar = document.getElementById("botao-parar");
+        const botaoLanterna = document.getElementById("botao-lanterna");
+        const botaoDesfazer = document.getElementById("botao-desfazer");
+        const botaoExportar = document.getElementById("botao-exportar");
+        const botaoReiniciar = document.getElementById("botao-reiniciar");
+        const botaoLimparRepetidas = document.getElementById("botao-limpar-repetidas");
 
-        const botaoParar =
-            document.getElementById("botao-parar");
+        const somAtivo = document.getElementById("som-ativo");
+        const ocultarRepetidas = document.getElementById("ocultar-repetidas");
 
-        const botaoLanterna =
-            document.getElementById("botao-lanterna");
+        const totalPrevisto = document.getElementById("total-previsto");
+        const totalLocalizados = document.getElementById("total-localizados");
+        const totalPendentes = document.getElementById("total-pendentes");
+        const totalRepetidasElemento = document.getElementById("total-repetidas");
+        const totalDesconhecidasElemento = document.getElementById("total-desconhecidas");
 
-        const botaoCopiar =
-            document.getElementById("botao-copiar");
+        const dialogoDuplicidade = document.getElementById("dialogo-duplicidade");
+        const opcoesDuplicidade = document.getElementById("opcoes-duplicidade");
+        const cancelarDuplicidade = document.getElementById("cancelar-duplicidade");
 
-        const botaoAbrir =
-            document.getElementById("botao-abrir");
+        const TEMPO_BLOQUEIO_MESMO_CODIGO = 2200;
 
-        let ultimoResultado = "";
-        let horarioUltimaLeitura = 0;
+        let registros = [];
+        let mapaPatrimonios = new Map();
+        let historico = [];
+        let pilhaConferidos = [];
+
+        let nomeArquivo = "";
+        let nomeAba = "";
         let cameraAtiva = false;
+        let resolvendoDuplicidade = false;
 
-        function alterarStatus(mensagem, tipo = "") {
-            statusElemento.textContent = mensagem;
-            statusElemento.className =
-                `status ${tipo}`.trim();
+        let totalRepetidas = 0;
+        let totalDesconhecidas = 0;
+
+        let ultimoCodigoCamera = "";
+        let horarioUltimoCodigoCamera = 0;
+
+        let contextoAudio = null;
+
+        function limparAcentos(texto) {
+            return String(texto ?? "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function normalizarCabecalho(texto) {
+            return limparAcentos(texto)
+                .trim()
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, "_")
+                .replace(/^_+|_+$/g, "");
+        }
+
+        function normalizarPatrimonio(texto) {
+            return limparAcentos(texto)
+                .toUpperCase()
+                .replace(/[^A-Z0-9]/g, "");
+        }
+
+        function normalizarLinha(linha) {
+            const normalizada = {};
+
+            for (const [chave, valor] of Object.entries(linha)) {
+                normalizada[normalizarCabecalho(chave)] = valor;
+            }
+
+            return normalizada;
+        }
+
+        function textoCurto(texto, limite = 115) {
+            const limpo = String(texto ?? "").replace(/\s+/g, " ").trim();
+
+            if (limpo.length <= limite) {
+                return limpo;
+            }
+
+            return `${limpo.slice(0, limite - 1)}…`;
+        }
+
+        function formatarData(data = new Date()) {
+            return new Intl.DateTimeFormat("pt-BR", {
+                dateStyle: "short",
+                timeStyle: "medium"
+            }).format(data);
+        }
+
+        function alterarStatusCamera(mensagem, tipo = "") {
+            statusCamera.textContent = mensagem;
+            statusCamera.className = `status-camera ${tipo}`.trim();
+        }
+
+        function atualizarUltimoResultado(titulo, detalhe, tipo = "") {
+            ultimoResultado.className = `ultimo-resultado ${tipo}`.trim();
+            ultimoResultado.innerHTML = "";
+
+            const forte = document.createElement("strong");
+            forte.textContent = titulo;
+
+            const texto = document.createElement("span");
+            texto.textContent = detalhe;
+
+            ultimoResultado.append(forte, texto);
+        }
+
+        function atualizarIndicadores() {
+            const localizados = registros.filter((item) => item.conferido).length;
+
+            totalPrevisto.textContent = String(registros.length);
+            totalLocalizados.textContent = String(localizados);
+            totalPendentes.textContent = String(registros.length - localizados);
+            totalRepetidasElemento.textContent = String(totalRepetidas);
+            totalDesconhecidasElemento.textContent = String(totalDesconhecidas);
+
+            botaoDesfazer.disabled = pilhaConferidos.length === 0;
+        }
+
+        function classeHistorico(tipo) {
+            const classes = {
+                LOCALIZADO: "localizado",
+                REPETIDO: "repetido",
+                NAO_CADASTRADO: "desconhecido",
+                DESFEITO: "desfeito"
+            };
+
+            return classes[tipo] || "";
+        }
+
+        function tituloHistorico(tipo) {
+            const titulos = {
+                LOCALIZADO: "Localizado",
+                REPETIDO: "Leitura repetida",
+                NAO_CADASTRADO: "Não cadastrado",
+                DESFEITO: "Leitura desfeita"
+            };
+
+            return titulos[tipo] || tipo;
+        }
+
+        function renderizarHistorico() {
+            historicoElemento.innerHTML = "";
+
+            const itensVisiveis = historico.filter((leitura) => {
+                return !(ocultarRepetidas.checked && leitura.tipo === "REPETIDO");
+            });
+
+            if (itensVisiveis.length === 0) {
+                const vazio = document.createElement("div");
+                vazio.className = "historico-vazio";
+                vazio.textContent = historico.length
+                    ? "As leituras repetidas estão ocultas."
+                    : "Nenhuma leitura realizada.";
+                historicoElemento.append(vazio);
+                return;
+            }
+
+            for (const leitura of itensVisiveis.slice(0, 150)) {
+                const item = document.createElement("article");
+                item.className = `leitura ${classeHistorico(leitura.tipo)}`.trim();
+
+                const topo = document.createElement("div");
+                topo.className = "leitura-topo";
+
+                const titulo = document.createElement("strong");
+                titulo.textContent = `${tituloHistorico(leitura.tipo)} — ${leitura.codigo}`;
+
+                const hora = document.createElement("small");
+                hora.textContent = leitura.dataHora;
+
+                topo.append(titulo, hora);
+
+                const descricao = document.createElement("p");
+                descricao.textContent = leitura.descricao;
+
+                item.append(topo, descricao);
+                historicoElemento.append(item);
+            }
+        }
+
+        function adicionarHistorico(tipo, codigo, descricao, registro = null) {
+            const agora = new Date();
+
+            historico.unshift({
+                id: `${Date.now()}-${Math.random()}`,
+                tipo,
+                codigo,
+                descricao,
+                dataHora: formatarData(agora),
+                dataIso: agora.toISOString(),
+                indiceRegistro: registro?.indice ?? null
+            });
+
+            renderizarHistorico();
+        }
+
+        function garantirAudio() {
+            const ClasseAudio = window.AudioContext || window.webkitAudioContext;
+
+            if (!ClasseAudio) {
+                return null;
+            }
+
+            if (!contextoAudio) {
+                contextoAudio = new ClasseAudio();
+            }
+
+            if (contextoAudio.state === "suspended") {
+                contextoAudio.resume();
+            }
+
+            return contextoAudio;
+        }
+
+        function tocarTom(frequencia, inicio, duracao, tipo = "sine", volume = 0.075) {
+            if (!somAtivo.checked) {
+                return;
+            }
+
+            const audio = garantirAudio();
+
+            if (!audio) {
+                return;
+            }
+
+            const oscilador = audio.createOscillator();
+            const ganho = audio.createGain();
+            const comeco = audio.currentTime + inicio;
+            const fim = comeco + duracao;
+
+            oscilador.type = tipo;
+            oscilador.frequency.setValueAtTime(frequencia, comeco);
+
+            ganho.gain.setValueAtTime(0.0001, comeco);
+            ganho.gain.exponentialRampToValueAtTime(volume, comeco + 0.015);
+            ganho.gain.exponentialRampToValueAtTime(0.0001, fim);
+
+            oscilador.connect(ganho);
+            ganho.connect(audio.destination);
+
+            oscilador.start(comeco);
+            oscilador.stop(fim + 0.02);
+        }
+
+        function tocarSucesso() {
+            tocarTom(523.25, 0, 0.12, "sine", 0.07);
+            tocarTom(659.25, 0.07, 0.13, "sine", 0.075);
+            tocarTom(783.99, 0.14, 0.18, "sine", 0.08);
+        }
+
+        function tocarRepetido() {
+            tocarTom(349.23, 0, 0.12, "triangle", 0.065);
+            tocarTom(293.66, 0.1, 0.16, "triangle", 0.06);
+        }
+
+        function tocarErro() {
+            tocarTom(174.61, 0, 0.15, "sawtooth", 0.045);
+            tocarTom(130.81, 0.12, 0.22, "sawtooth", 0.04);
+        }
+
+        function vibrar(padrao) {
+            if ("vibrate" in navigator) {
+                navigator.vibrate(padrao);
+            }
+        }
+
+        function candidatosDoQr(textoQr) {
+            const texto = String(textoQr ?? "").trim();
+            const candidatos = new Set([texto]);
+
+            try {
+                const objeto = JSON.parse(texto);
+
+                for (const chave of ["patrimonio", "PATRIMONIO", "item", "id", "codigo"]) {
+                    if (objeto?.[chave] != null) {
+                        candidatos.add(String(objeto[chave]));
+                    }
+                }
+            } catch {
+                // O QR Code não contém JSON.
+            }
+
+            try {
+                const endereco = new URL(texto);
+
+                for (const chave of ["patrimonio", "item", "id", "codigo", "qr"]) {
+                    const valor = endereco.searchParams.get(chave);
+
+                    if (valor) {
+                        candidatos.add(valor);
+                    }
+                }
+            } catch {
+                // O QR Code não contém uma URL.
+            }
+
+            const ocorrencias = texto.match(/[A-Z]*\d[\d.\-/]{5,}[A-Z0-9]*/gi) || [];
+
+            for (const ocorrencia of ocorrencias) {
+                candidatos.add(ocorrencia);
+            }
+
+            return [...candidatos]
+                .map(normalizarPatrimonio)
+                .filter(Boolean);
+        }
+
+        function localizarGrupo(textoQr) {
+            for (const candidato of candidatosDoQr(textoQr)) {
+                const grupo = mapaPatrimonios.get(candidato);
+
+                if (grupo) {
+                    return {
+                        chave: candidato,
+                        grupo
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        function confirmarRegistro(registro, codigoLido) {
+            const agora = new Date();
+
+            registro.conferido = true;
+            registro.conferidoEm = formatarData(agora);
+            registro.conferidoIso = agora.toISOString();
+            registro.codigoLido = codigoLido;
+
+            pilhaConferidos.push(registro);
+
+            const descricao = textoCurto(registro.material);
+
+            atualizarUltimoResultado(
+                `Patrimônio ${registro.patrimonio} localizado`,
+                descricao,
+                "ok"
+            );
+
+            alterarStatusCamera("QR Code reconhecido e conferido.", "ok");
+            adicionarHistorico("LOCALIZADO", registro.patrimonio, descricao, registro);
+
+            tocarSucesso();
+            vibrar([45, 45, 85]);
+            atualizarIndicadores();
+        }
+
+        function registrarRepeticao(grupo, codigoLido) {
+            totalRepetidas += 1;
+
+            const registro = grupo.find((item) => item.conferido) || grupo[0];
+            const descricao = textoCurto(registro?.material || "Código já conferido.");
+
+            atualizarUltimoResultado(
+                `Patrimônio ${registro?.patrimonio || codigoLido} já conferido`,
+                "A repetição não aumentou o total de materiais localizados.",
+                "alerta"
+            );
+
+            alterarStatusCamera("Leitura repetida ignorada.", "alerta");
+            adicionarHistorico("REPETIDO", registro?.patrimonio || codigoLido, descricao, registro);
+
+            tocarRepetido();
+            vibrar(70);
+            atualizarIndicadores();
+        }
+
+        function registrarDesconhecido(codigoLido) {
+            totalDesconhecidas += 1;
+
+            atualizarUltimoResultado(
+                "QR Code não cadastrado",
+                codigoLido,
+                "erro"
+            );
+
+            alterarStatusCamera("O código não foi encontrado na planilha.", "erro");
+            adicionarHistorico(
+                "NAO_CADASTRADO",
+                codigoLido,
+                "Código não localizado na coluna PATRIMONIO."
+            );
+
+            tocarErro();
+            vibrar([110, 60, 110]);
+            atualizarIndicadores();
+        }
+
+        function abrirResolucaoDuplicidade(registrosPendentes, codigoLido) {
+            resolvendoDuplicidade = true;
+            opcoesDuplicidade.innerHTML = "";
+
+            for (const registro of registrosPendentes) {
+                const botao = document.createElement("button");
+                botao.type = "button";
+                botao.className = "opcao-duplicidade";
+
+                const patrimonio = document.createElement("strong");
+                patrimonio.textContent = `Linha ${registro.linhaPlanilha} — ${registro.patrimonio}`;
+
+                const material = document.createElement("span");
+                material.textContent = textoCurto(registro.material, 150);
+
+                botao.append(patrimonio, material);
+
+                botao.addEventListener("click", () => {
+                    confirmarRegistro(registro, codigoLido);
+                    dialogoDuplicidade.close();
+                });
+
+                opcoesDuplicidade.append(botao);
+            }
+
+            dialogoDuplicidade.showModal();
+        }
+
+        function processarQrCode(textoQr) {
+            if (!registros.length || resolvendoDuplicidade) {
+                return;
+            }
+
+            const agora = Date.now();
+            const codigoComparacao = normalizarPatrimonio(textoQr);
+
+            if (
+                codigoComparacao === ultimoCodigoCamera &&
+                agora - horarioUltimoCodigoCamera < TEMPO_BLOQUEIO_MESMO_CODIGO
+            ) {
+                return;
+            }
+
+            ultimoCodigoCamera = codigoComparacao;
+            horarioUltimoCodigoCamera = agora;
+
+            const encontrado = localizarGrupo(textoQr);
+
+            if (!encontrado) {
+                registrarDesconhecido(textoQr);
+                return;
+            }
+
+            const pendentes = encontrado.grupo.filter((item) => !item.conferido);
+
+            if (pendentes.length === 0) {
+                registrarRepeticao(encontrado.grupo, textoQr);
+                return;
+            }
+
+            if (pendentes.length > 1) {
+                abrirResolucaoDuplicidade(pendentes, textoQr);
+                return;
+            }
+
+            confirmarRegistro(pendentes[0], textoQr);
         }
 
         function calcularRegiao(videoElemento) {
             const largura = videoElemento.videoWidth;
             const altura = videoElemento.videoHeight;
-
-            const tamanho = Math.round(
-                Math.min(largura, altura) * 0.65
-            );
+            const tamanho = Math.round(Math.min(largura, altura) * 0.66);
 
             return {
                 x: Math.round((largura - tamanho) / 2),
                 y: Math.round((altura - tamanho) / 2),
                 width: tamanho,
                 height: tamanho,
-
-                // Somente 400 × 400 pixels são processados.
                 downScaledWidth: 400,
                 downScaledHeight: 400
             };
@@ -365,91 +1174,23 @@
 
         const leitor = new QrScanner(
             video,
-
-            (resultado) => {
-                apresentarResultado(resultado.data);
-            },
-
+            (resultado) => processarQrCode(resultado.data),
             {
                 preferredCamera: "environment",
-
-                // Até 25 verificações por segundo.
                 maxScansPerSecond: 25,
-
-                // Analisa somente a região central.
                 calculateScanRegion: calcularRegiao,
-
                 returnDetailedScanResult: true,
-
                 highlightScanRegion: false,
                 highlightCodeOutline: false,
-
-                onDecodeError: () => {
-                    // Ausência momentânea de QR Code não é erro.
-                }
+                onDecodeError: () => {}
             }
         );
 
-        // Otimização para QR Code escuro em fundo claro.
         leitor.setInversionMode("original");
-
-        function identificarEndereco(texto) {
-            try {
-                const endereco = new URL(texto);
-
-                if (
-                    endereco.protocol === "http:" ||
-                    endereco.protocol === "https:"
-                ) {
-                    return endereco.href;
-                }
-            } catch {
-                return null;
-            }
-
-            return null;
-        }
-
-        function apresentarResultado(texto) {
-            const agora = Date.now();
-
-            if (
-                texto === ultimoResultado &&
-                agora - horarioUltimaLeitura < 1500
-            ) {
-                return;
-            }
-
-            ultimoResultado = texto;
-            horarioUltimaLeitura = agora;
-
-            resultadoElemento.textContent = texto;
-            botaoCopiar.disabled = false;
-
-            alterarStatus(
-                "QR Code identificado com sucesso.",
-                "sucesso"
-            );
-
-            if ("vibrate" in navigator) {
-                navigator.vibrate(120);
-            }
-
-            const endereco = identificarEndereco(texto);
-
-            if (endereco) {
-                botaoAbrir.href = endereco;
-                botaoAbrir.hidden = false;
-            } else {
-                botaoAbrir.href = "#";
-                botaoAbrir.hidden = true;
-            }
-        }
 
         async function configurarFocoContinuo() {
             try {
-                const faixa =
-                    video.srcObject?.getVideoTracks()[0];
+                const faixa = video.srcObject?.getVideoTracks()[0];
 
                 if (!faixa?.getCapabilities) {
                     return;
@@ -457,59 +1198,50 @@
 
                 const capacidades = faixa.getCapabilities();
 
-                if (
-                    capacidades.focusMode?.includes("continuous")
-                ) {
+                if (capacidades.focusMode?.includes("continuous")) {
                     await faixa.applyConstraints({
-                        advanced: [
-                            {
-                                focusMode: "continuous"
-                            }
-                        ]
+                        advanced: [{ focusMode: "continuous" }]
                     });
                 }
             } catch {
-                // O aparelho pode não disponibilizar foco manual.
+                // Alguns aparelhos não expõem o controle de foco.
             }
         }
 
         async function verificarLanterna() {
             try {
-                const possuiLanterna =
-                    await leitor.hasFlash();
-
-                botaoLanterna.hidden = !possuiLanterna;
+                botaoLanterna.hidden = !(await leitor.hasFlash());
             } catch {
                 botaoLanterna.hidden = true;
             }
         }
 
         function mensagemErroCamera(erro) {
-            const nome = erro?.name || "";
-
-            if (nome === "NotAllowedError") {
+            if (erro?.name === "NotAllowedError") {
                 return "A permissão da câmera foi negada.";
             }
 
-            if (nome === "NotFoundError") {
+            if (erro?.name === "NotFoundError") {
                 return "Nenhuma câmera foi encontrada.";
             }
 
-            if (nome === "NotReadableError") {
+            if (erro?.name === "NotReadableError") {
                 return "A câmera está sendo utilizada por outro aplicativo.";
             }
 
-            return `Não foi possível abrir a câmera: ${
-                erro?.message || erro
-            }`;
+            return `Não foi possível abrir a câmera: ${erro?.message || erro}`;
         }
 
         async function iniciarCamera() {
+            garantirAudio();
+
+            if (!registros.length) {
+                alterarStatusCamera("Carregue a planilha antes de iniciar.", "erro");
+                return;
+            }
+
             if (!window.isSecureContext) {
-                alterarStatus(
-                    "A câmera exige uma conexão HTTPS.",
-                    "erro"
-                );
+                alterarStatusCamera("A câmera exige uma conexão HTTPS.", "erro");
                 return;
             }
 
@@ -518,16 +1250,11 @@
             }
 
             botaoIniciar.disabled = true;
-            alterarStatus("Solicitando acesso à câmera...");
+            alterarStatusCamera("Solicitando acesso à câmera...");
 
             try {
-                const possuiCamera =
-                    await QrScanner.hasCamera();
-
-                if (!possuiCamera) {
-                    throw new Error(
-                        "Nenhuma câmera disponível."
-                    );
+                if (!(await QrScanner.hasCamera())) {
+                    throw new Error("Nenhuma câmera disponível.");
                 }
 
                 await leitor.start();
@@ -538,18 +1265,12 @@
                 await configurarFocoContinuo();
                 await verificarLanterna();
 
-                alterarStatus(
-                    "Aponte o QR Code para o centro do quadro."
-                );
+                alterarStatusCamera("Aponte o QR Code para o centro do quadro.");
             } catch (erro) {
                 cameraAtiva = false;
                 botaoIniciar.disabled = false;
                 botaoParar.disabled = true;
-
-                alterarStatus(
-                    mensagemErroCamera(erro),
-                    "erro"
-                );
+                alterarStatusCamera(mensagemErroCamera(erro), "erro");
             }
         }
 
@@ -557,67 +1278,334 @@
             leitor.stop();
 
             cameraAtiva = false;
-            botaoIniciar.disabled = false;
+            botaoIniciar.disabled = !registros.length;
             botaoParar.disabled = true;
             botaoLanterna.hidden = true;
             botaoLanterna.textContent = "Ligar lanterna";
 
-            alterarStatus("Câmera encerrada.");
+            alterarStatusCamera("Câmera encerrada.");
         }
 
         async function alternarLanterna() {
             try {
                 await leitor.toggleFlash();
-
-                botaoLanterna.textContent =
-                    leitor.isFlashOn()
-                        ? "Desligar lanterna"
-                        : "Ligar lanterna";
+                botaoLanterna.textContent = leitor.isFlashOn()
+                    ? "Desligar lanterna"
+                    : "Ligar lanterna";
             } catch {
-                alterarStatus(
-                    "A lanterna não está disponível.",
-                    "erro"
-                );
+                alterarStatusCamera("A lanterna não está disponível.", "erro");
             }
         }
 
-        async function copiarResultado() {
+        function escolherAba(workbook) {
+            const preferida = workbook.SheetNames.find((nome) => {
+                return normalizarCabecalho(nome) === "CARGA_PATRIMONIAL";
+            });
+
+            return preferida || workbook.SheetNames[0];
+        }
+
+        function criarRegistros(linhas) {
+            const novosRegistros = [];
+
+            linhas.forEach((linhaOriginal, indice) => {
+                const linha = normalizarLinha(linhaOriginal);
+                const patrimonio = String(linha.PATRIMONIO ?? "").trim();
+                const chavePatrimonio = normalizarPatrimonio(patrimonio);
+
+                if (!chavePatrimonio) {
+                    return;
+                }
+
+                novosRegistros.push({
+                    indice: novosRegistros.length,
+                    linhaPlanilha: indice + 2,
+                    patrimonio,
+                    chavePatrimonio,
+                    tipo: String(linha.TIPO ?? "").trim(),
+                    placaSerie: String(linha.PLACA_SERIE ?? "").trim(),
+                    codigoMaterial: String(linha.COD_MATERIAL ?? "").trim(),
+                    material: String(linha.MATERIAL ?? "").trim(),
+                    destino: String(linha.DESTINO ?? "").trim(),
+                    estadoConservacao: String(linha.ESTADO_CONSERVACAO ?? "").trim(),
+                    uo: String(linha.UO ?? "").trim(),
+                    valor: linha.VALOR ?? "",
+                    original: linhaOriginal,
+                    conferido: false,
+                    conferidoEm: "",
+                    conferidoIso: "",
+                    codigoLido: ""
+                });
+            });
+
+            return novosRegistros;
+        }
+
+        function construirMapa() {
+            mapaPatrimonios = new Map();
+
+            for (const registro of registros) {
+                const grupo = mapaPatrimonios.get(registro.chavePatrimonio) || [];
+                grupo.push(registro);
+                mapaPatrimonios.set(registro.chavePatrimonio, grupo);
+            }
+        }
+
+        function quantidadeDuplicidadesPlanilha() {
+            return [...mapaPatrimonios.values()].filter((grupo) => grupo.length > 1).length;
+        }
+
+        function zerarConferencia() {
+            if (cameraAtiva) {
+                pararCamera();
+            }
+
+            historico = [];
+            pilhaConferidos = [];
+            totalRepetidas = 0;
+            totalDesconhecidas = 0;
+            ultimoCodigoCamera = "";
+            horarioUltimoCodigoCamera = 0;
+
+            for (const registro of registros) {
+                registro.conferido = false;
+                registro.conferidoEm = "";
+                registro.conferidoIso = "";
+                registro.codigoLido = "";
+            }
+
+            atualizarUltimoResultado(
+                "Nenhum QR Code identificado.",
+                "O resultado aparecerá aqui."
+            );
+
+            atualizarIndicadores();
+            renderizarHistorico();
+        }
+
+        async function carregarPlanilha(evento) {
+            const arquivo = evento.target.files?.[0];
+
+            if (!arquivo) {
+                return;
+            }
+
+            if (historico.length && !window.confirm("Carregar outra planilha apagará a conferência atual. Continuar?")) {
+                arquivoPlanilha.value = "";
+                return;
+            }
+
+            arquivoInfo.className = "arquivo-info";
+            arquivoInfo.textContent = "Lendo a planilha no celular...";
+
             try {
-                await navigator.clipboard.writeText(
-                    resultadoElemento.textContent
-                );
+                if (!window.XLSX) {
+                    throw new Error("A biblioteca de leitura do Excel não foi carregada.");
+                }
 
-                alterarStatus(
-                    "Conteúdo copiado.",
-                    "sucesso"
-                );
-            } catch {
-                alterarStatus(
-                    "Não foi possível copiar o conteúdo.",
-                    "erro"
-                );
+                const dados = await arquivo.arrayBuffer();
+                const workbook = window.XLSX.read(dados, {
+                    type: "array",
+                    raw: false,
+                    cellDates: true
+                });
+
+                nomeAba = escolherAba(workbook);
+                const planilha = workbook.Sheets[nomeAba];
+
+                const linhas = window.XLSX.utils.sheet_to_json(planilha, {
+                    defval: "",
+                    raw: false
+                });
+
+                const cabecalhos = linhas[0] ? Object.keys(normalizarLinha(linhas[0])) : [];
+
+                if (!cabecalhos.includes("PATRIMONIO")) {
+                    throw new Error("Não encontrei a coluna PATRIMONIO.");
+                }
+
+                registros = criarRegistros(linhas);
+
+                if (!registros.length) {
+                    throw new Error("A planilha não possui patrimônios válidos.");
+                }
+
+                nomeArquivo = arquivo.name;
+                construirMapa();
+                zerarConferencia();
+
+                const duplicidades = quantidadeDuplicidadesPlanilha();
+
+                arquivoInfo.className = duplicidades
+                    ? "arquivo-info alerta"
+                    : "arquivo-info ok";
+
+                arquivoInfo.textContent = duplicidades
+                    ? `${arquivo.name}: ${registros.length} bens carregados da aba “${nomeAba}”. Existem ${duplicidades} códigos PATRIMONIO repetidos; o sistema pedirá a escolha da linha durante a leitura.`
+                    : `${arquivo.name}: ${registros.length} bens carregados da aba “${nomeAba}”. Nenhum patrimônio duplicado foi encontrado.`;
+
+                botaoIniciar.disabled = false;
+                botaoExportar.disabled = false;
+                botaoReiniciar.disabled = false;
+
+                alterarStatusCamera("Planilha carregada. A câmera pode ser iniciada.", "ok");
+            } catch (erro) {
+                registros = [];
+                mapaPatrimonios = new Map();
+
+                arquivoInfo.className = "arquivo-info erro";
+                arquivoInfo.textContent = `Não foi possível carregar: ${erro?.message || erro}`;
+
+                botaoIniciar.disabled = true;
+                botaoExportar.disabled = true;
+                botaoReiniciar.disabled = true;
+
+                atualizarIndicadores();
+                alterarStatusCamera("Corrija a planilha e tente novamente.", "erro");
             }
         }
 
-        botaoIniciar.addEventListener(
-            "click",
-            iniciarCamera
-        );
+        function desfazerUltimaLeitura() {
+            let registro = pilhaConferidos.pop();
 
-        botaoParar.addEventListener(
-            "click",
-            pararCamera
-        );
+            while (registro && !registro.conferido) {
+                registro = pilhaConferidos.pop();
+            }
 
-        botaoLanterna.addEventListener(
-            "click",
-            alternarLanterna
-        );
+            if (!registro) {
+                atualizarIndicadores();
+                return;
+            }
 
-        botaoCopiar.addEventListener(
-            "click",
-            copiarResultado
-        );
+            registro.conferido = false;
+            registro.conferidoEm = "";
+            registro.conferidoIso = "";
+            registro.codigoLido = "";
+
+            adicionarHistorico(
+                "DESFEITO",
+                registro.patrimonio,
+                textoCurto(registro.material),
+                registro
+            );
+
+            atualizarUltimoResultado(
+                `Leitura do patrimônio ${registro.patrimonio} desfeita`,
+                "O item voltou para a relação de pendentes.",
+                "alerta"
+            );
+
+            alterarStatusCamera("Última leitura desfeita.", "alerta");
+            tocarRepetido();
+            atualizarIndicadores();
+        }
+
+        function limparRepetidasDaLista() {
+            historico = historico.filter((leitura) => leitura.tipo !== "REPETIDO");
+            renderizarHistorico();
+            alterarStatusCamera("Repetições removidas da visualização.", "ok");
+        }
+
+        function nomeResultado() {
+            const base = nomeArquivo
+                .replace(/\.(xlsx|xls|csv)$/i, "")
+                .replace(/[^a-zA-Z0-9_-]+/g, "_");
+
+            const agora = new Date();
+            const data = agora.toISOString().slice(0, 10);
+            const hora = agora.toTimeString().slice(0, 5).replace(":", "-");
+
+            return `${base || "carga_patrimonial"}_conferencia_${data}_${hora}.xlsx`;
+        }
+
+        function exportarResultado() {
+            if (!registros.length || !window.XLSX) {
+                return;
+            }
+
+            const resultado = registros.map((registro) => ({
+                ...registro.original,
+                CONFERIDO: registro.conferido ? "SIM" : "NAO",
+                DATA_HORA_CONFERENCIA: registro.conferidoEm,
+                RESULTADO_CONFERENCIA: registro.conferido ? "LOCALIZADO" : "PENDENTE",
+                QR_LIDO: registro.codigoLido
+            }));
+
+            const leituras = [...historico]
+                .reverse()
+                .map((leitura) => ({
+                    TIPO: leitura.tipo,
+                    QR_OU_PATRIMONIO: leitura.codigo,
+                    DESCRICAO: leitura.descricao,
+                    DATA_HORA: leitura.dataHora
+                }));
+
+            const localizados = registros.filter((item) => item.conferido).length;
+
+            const resumo = [
+                { INDICADOR: "Arquivo de origem", VALOR: nomeArquivo },
+                { INDICADOR: "Aba de origem", VALOR: nomeAba },
+                { INDICADOR: "Data da exportacao", VALOR: formatarData() },
+                { INDICADOR: "Total previsto", VALOR: registros.length },
+                { INDICADOR: "Localizados", VALOR: localizados },
+                { INDICADOR: "Pendentes", VALOR: registros.length - localizados },
+                { INDICADOR: "Leituras repetidas", VALOR: totalRepetidas },
+                { INDICADOR: "Codigos nao cadastrados", VALOR: totalDesconhecidas }
+            ];
+
+            const workbook = window.XLSX.utils.book_new();
+            const abaResultado = window.XLSX.utils.json_to_sheet(resultado);
+            const abaLeituras = window.XLSX.utils.json_to_sheet(leituras);
+            const abaResumo = window.XLSX.utils.json_to_sheet(resumo);
+
+            abaResultado["!cols"] = [
+                { wch: 16 }, { wch: 12 }, { wch: 18 }, { wch: 16 },
+                { wch: 70 }, { wch: 14 }, { wch: 22 }, { wch: 10 },
+                { wch: 14 }, { wch: 12 }, { wch: 23 }, { wch: 24 }, { wch: 20 }
+            ];
+
+            abaLeituras["!cols"] = [
+                { wch: 20 }, { wch: 24 }, { wch: 70 }, { wch: 22 }
+            ];
+
+            abaResumo["!cols"] = [{ wch: 28 }, { wch: 35 }];
+
+            window.XLSX.utils.book_append_sheet(workbook, abaResumo, "Resumo");
+            window.XLSX.utils.book_append_sheet(workbook, abaResultado, "Resultado");
+            window.XLSX.utils.book_append_sheet(workbook, abaLeituras, "Leituras");
+
+            window.XLSX.writeFile(workbook, nomeResultado(), {
+                compression: true
+            });
+
+            alterarStatusCamera("Planilha de resultado gerada.", "ok");
+        }
+
+        arquivoPlanilha.addEventListener("change", carregarPlanilha);
+        botaoIniciar.addEventListener("click", iniciarCamera);
+        botaoParar.addEventListener("click", pararCamera);
+        botaoLanterna.addEventListener("click", alternarLanterna);
+        botaoDesfazer.addEventListener("click", desfazerUltimaLeitura);
+        botaoExportar.addEventListener("click", exportarResultado);
+        botaoLimparRepetidas.addEventListener("click", limparRepetidasDaLista);
+
+        botaoReiniciar.addEventListener("click", () => {
+            if (window.confirm("Deseja apagar todas as leituras e reiniciar a conferência?")) {
+                zerarConferencia();
+                alterarStatusCamera("Conferência reiniciada.", "ok");
+            }
+        });
+
+        ocultarRepetidas.addEventListener("change", renderizarHistorico);
+
+        cancelarDuplicidade.addEventListener("click", () => {
+            dialogoDuplicidade.close();
+        });
+
+        dialogoDuplicidade.addEventListener("close", () => {
+            resolvendoDuplicidade = false;
+            horarioUltimoCodigoCamera = Date.now();
+        });
 
         window.addEventListener("pagehide", () => {
             leitor.destroy();
