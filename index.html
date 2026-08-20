@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -27,7 +28,7 @@
         body {
             margin: 0;
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
             color: var(--texto);
             background: var(--cinza-claro);
             font-family: Arial, Helvetica, sans-serif;
@@ -40,12 +41,12 @@
         }
 
         header {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: center;
         }
 
         h1 {
-            margin: 0 0 8px;
+            margin: 0 0 6px;
             color: var(--vermelho-escuro);
             font-size: 1.7rem;
         }
@@ -56,8 +57,8 @@
         }
 
         .cartao {
-            padding: 18px;
-            margin-bottom: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
             background: var(--branco);
             border-radius: 16px;
             box-shadow: 0 5px 18px rgba(0, 0, 0, 0.09);
@@ -85,11 +86,35 @@
             left: 50%;
             width: 230px;
             height: 230px;
-            border: 4px solid rgba(255, 255, 255, 0.9);
+            border: 4px solid rgba(255, 255, 255, 0.95);
             border-radius: 18px;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.24);
             pointer-events: none;
+        }
+
+        .guia::before,
+        .guia::after {
+            position: absolute;
+            content: "";
+            width: 38px;
+            height: 38px;
+            border-color: #38ef7d;
+            border-style: solid;
+        }
+
+        .guia::before {
+            top: -5px;
+            left: -5px;
+            border-width: 6px 0 0 6px;
+            border-radius: 14px 0 0;
+        }
+
+        .guia::after {
+            right: -5px;
+            bottom: -5px;
+            border-width: 0 6px 6px 0;
+            border-radius: 0 0 14px;
         }
 
         .status {
@@ -111,14 +136,14 @@
 
         .botoes {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
 
         button,
         .link-botao {
             min-height: 48px;
-            padding: 12px 16px;
+            padding: 12px 14px;
             border: 0;
             border-radius: 10px;
             font-size: 1rem;
@@ -136,13 +161,13 @@
             background: var(--vermelho);
         }
 
-        .primario:hover:not(:disabled) {
-            background: var(--vermelho-escuro);
-        }
-
         .secundario {
             color: var(--texto);
             background: #e4e7ec;
+        }
+
+        #botao-lanterna {
+            grid-column: 1 / -1;
         }
 
         .resultado-titulo {
@@ -182,7 +207,7 @@
 
         @media (max-width: 480px) {
             body {
-                padding: 12px;
+                padding: 10px;
             }
 
             .cartao {
@@ -190,8 +215,8 @@
             }
 
             .guia {
-                width: 200px;
-                height: 200px;
+                width: 210px;
+                height: 210px;
             }
         }
     </style>
@@ -201,7 +226,7 @@
     <main class="aplicacao">
         <header>
             <h1>Conferência de Carga</h1>
-            <p>Leitura de materiais por QR Code</p>
+            <p>Leitura otimizada de QR Code</p>
         </header>
 
         <section class="cartao">
@@ -215,7 +240,11 @@
                 <div class="guia" aria-hidden="true"></div>
             </div>
 
-            <p id="status" class="status">
+            <p
+                id="status"
+                class="status"
+                aria-live="polite"
+            >
                 Toque em “Abrir câmera” para iniciar.
             </p>
 
@@ -235,6 +264,15 @@
                     disabled
                 >
                     Parar câmera
+                </button>
+
+                <button
+                    id="botao-lanterna"
+                    class="secundario"
+                    type="button"
+                    hidden
+                >
+                    Ligar lanterna
                 </button>
             </div>
         </section>
@@ -268,32 +306,92 @@
         </section>
 
         <footer>
-            Projeto inicial de conferência por QR Code
+            Projeto de conferência por QR Code
         </footer>
     </main>
 
-    <script src="https://unpkg.com/@zxing/browser@0.2.1"></script>
+    <script type="module">
+        import QrScanner from
+            "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
-    <script>
         const video = document.getElementById("video");
         const statusElemento = document.getElementById("status");
         const resultadoElemento = document.getElementById("resultado");
 
-        const botaoIniciar = document.getElementById("botao-iniciar");
-        const botaoParar = document.getElementById("botao-parar");
-        const botaoCopiar = document.getElementById("botao-copiar");
-        const botaoAbrir = document.getElementById("botao-abrir");
+        const botaoIniciar =
+            document.getElementById("botao-iniciar");
 
-        const leitor = new ZXingBrowser.BrowserQRCodeReader();
+        const botaoParar =
+            document.getElementById("botao-parar");
 
-        let controlesCamera = null;
+        const botaoLanterna =
+            document.getElementById("botao-lanterna");
+
+        const botaoCopiar =
+            document.getElementById("botao-copiar");
+
+        const botaoAbrir =
+            document.getElementById("botao-abrir");
+
         let ultimoResultado = "";
         let horarioUltimaLeitura = 0;
+        let cameraAtiva = false;
 
         function alterarStatus(mensagem, tipo = "") {
             statusElemento.textContent = mensagem;
-            statusElemento.className = `status ${tipo}`.trim();
+            statusElemento.className =
+                `status ${tipo}`.trim();
         }
+
+        function calcularRegiao(videoElemento) {
+            const largura = videoElemento.videoWidth;
+            const altura = videoElemento.videoHeight;
+
+            const tamanho = Math.round(
+                Math.min(largura, altura) * 0.65
+            );
+
+            return {
+                x: Math.round((largura - tamanho) / 2),
+                y: Math.round((altura - tamanho) / 2),
+                width: tamanho,
+                height: tamanho,
+
+                // Somente 400 × 400 pixels são processados.
+                downScaledWidth: 400,
+                downScaledHeight: 400
+            };
+        }
+
+        const leitor = new QrScanner(
+            video,
+
+            (resultado) => {
+                apresentarResultado(resultado.data);
+            },
+
+            {
+                preferredCamera: "environment",
+
+                // Até 25 verificações por segundo.
+                maxScansPerSecond: 25,
+
+                // Analisa somente a região central.
+                calculateScanRegion: calcularRegiao,
+
+                returnDetailedScanResult: true,
+
+                highlightScanRegion: false,
+                highlightCodeOutline: false,
+
+                onDecodeError: () => {
+                    // Ausência momentânea de QR Code não é erro.
+                }
+            }
+        );
+
+        // Otimização para QR Code escuro em fundo claro.
+        leitor.setInversionMode("original");
 
         function identificarEndereco(texto) {
             try {
@@ -317,7 +415,7 @@
 
             if (
                 texto === ultimoResultado &&
-                agora - horarioUltimaLeitura < 2000
+                agora - horarioUltimaLeitura < 1500
             ) {
                 return;
             }
@@ -328,10 +426,13 @@
             resultadoElemento.textContent = texto;
             botaoCopiar.disabled = false;
 
-            alterarStatus("QR Code identificado com sucesso.", "sucesso");
+            alterarStatus(
+                "QR Code identificado com sucesso.",
+                "sucesso"
+            );
 
             if ("vibrate" in navigator) {
-                navigator.vibrate(150);
+                navigator.vibrate(120);
             }
 
             const endereco = identificarEndereco(texto);
@@ -345,16 +446,56 @@
             }
         }
 
+        async function configurarFocoContinuo() {
+            try {
+                const faixa =
+                    video.srcObject?.getVideoTracks()[0];
+
+                if (!faixa?.getCapabilities) {
+                    return;
+                }
+
+                const capacidades = faixa.getCapabilities();
+
+                if (
+                    capacidades.focusMode?.includes("continuous")
+                ) {
+                    await faixa.applyConstraints({
+                        advanced: [
+                            {
+                                focusMode: "continuous"
+                            }
+                        ]
+                    });
+                }
+            } catch {
+                // O aparelho pode não disponibilizar foco manual.
+            }
+        }
+
+        async function verificarLanterna() {
+            try {
+                const possuiLanterna =
+                    await leitor.hasFlash();
+
+                botaoLanterna.hidden = !possuiLanterna;
+            } catch {
+                botaoLanterna.hidden = true;
+            }
+        }
+
         function mensagemErroCamera(erro) {
-            if (erro?.name === "NotAllowedError") {
+            const nome = erro?.name || "";
+
+            if (nome === "NotAllowedError") {
                 return "A permissão da câmera foi negada.";
             }
 
-            if (erro?.name === "NotFoundError") {
+            if (nome === "NotFoundError") {
                 return "Nenhuma câmera foi encontrada.";
             }
 
-            if (erro?.name === "NotReadableError") {
+            if (nome === "NotReadableError") {
                 return "A câmera está sendo utilizada por outro aplicativo.";
             }
 
@@ -372,7 +513,7 @@
                 return;
             }
 
-            if (controlesCamera) {
+            if (cameraAtiva) {
                 return;
             }
 
@@ -380,37 +521,28 @@
             alterarStatus("Solicitando acesso à câmera...");
 
             try {
-                const restricoes = {
-                    audio: false,
-                    video: {
-                        facingMode: {
-                            ideal: "environment"
-                        },
-                        width: {
-                            ideal: 1280
-                        },
-                        height: {
-                            ideal: 720
-                        }
-                    }
-                };
+                const possuiCamera =
+                    await QrScanner.hasCamera();
 
-                controlesCamera = await leitor.decodeFromConstraints(
-                    restricoes,
-                    video,
-                    (resultado) => {
-                        if (resultado) {
-                            apresentarResultado(resultado.getText());
-                        }
-                    }
-                );
+                if (!possuiCamera) {
+                    throw new Error(
+                        "Nenhuma câmera disponível."
+                    );
+                }
 
+                await leitor.start();
+
+                cameraAtiva = true;
                 botaoParar.disabled = false;
+
+                await configurarFocoContinuo();
+                await verificarLanterna();
+
                 alterarStatus(
-                    "Câmera aberta. Aponte para um QR Code."
+                    "Aponte o QR Code para o centro do quadro."
                 );
             } catch (erro) {
-                controlesCamera = null;
+                cameraAtiva = false;
                 botaoIniciar.disabled = false;
                 botaoParar.disabled = true;
 
@@ -422,23 +554,43 @@
         }
 
         function pararCamera() {
-            if (controlesCamera) {
-                controlesCamera.stop();
-                controlesCamera = null;
-            }
+            leitor.stop();
 
+            cameraAtiva = false;
             botaoIniciar.disabled = false;
             botaoParar.disabled = true;
+            botaoLanterna.hidden = true;
+            botaoLanterna.textContent = "Ligar lanterna";
 
             alterarStatus("Câmera encerrada.");
         }
 
-        async function copiarResultado() {
-            const texto = resultadoElemento.textContent;
-
+        async function alternarLanterna() {
             try {
-                await navigator.clipboard.writeText(texto);
-                alterarStatus("Conteúdo copiado.", "sucesso");
+                await leitor.toggleFlash();
+
+                botaoLanterna.textContent =
+                    leitor.isFlashOn()
+                        ? "Desligar lanterna"
+                        : "Ligar lanterna";
+            } catch {
+                alterarStatus(
+                    "A lanterna não está disponível.",
+                    "erro"
+                );
+            }
+        }
+
+        async function copiarResultado() {
+            try {
+                await navigator.clipboard.writeText(
+                    resultadoElemento.textContent
+                );
+
+                alterarStatus(
+                    "Conteúdo copiado.",
+                    "sucesso"
+                );
             } catch {
                 alterarStatus(
                     "Não foi possível copiar o conteúdo.",
@@ -447,14 +599,28 @@
             }
         }
 
-        botaoIniciar.addEventListener("click", iniciarCamera);
-        botaoParar.addEventListener("click", pararCamera);
-        botaoCopiar.addEventListener("click", copiarResultado);
+        botaoIniciar.addEventListener(
+            "click",
+            iniciarCamera
+        );
+
+        botaoParar.addEventListener(
+            "click",
+            pararCamera
+        );
+
+        botaoLanterna.addEventListener(
+            "click",
+            alternarLanterna
+        );
+
+        botaoCopiar.addEventListener(
+            "click",
+            copiarResultado
+        );
 
         window.addEventListener("pagehide", () => {
-            if (controlesCamera) {
-                controlesCamera.stop();
-            }
+            leitor.destroy();
         });
     </script>
 </body>
