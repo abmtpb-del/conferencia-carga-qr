@@ -1487,6 +1487,199 @@
             font-weight: 750;
         }
 
+        /* Pendências do inventário */
+        .pendencias-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+            align-items: start;
+            gap: 18px;
+        }
+
+        .formulario-pendencia {
+            display: grid;
+            padding: 16px;
+            gap: 13px;
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-200);
+            border-radius: 14px;
+        }
+
+        .campo-formulario {
+            display: grid;
+            gap: 6px;
+        }
+
+        .campo-formulario label {
+            color: var(--cinza-700);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .campo-formulario input,
+        .campo-formulario select,
+        .campo-formulario textarea {
+            width: 100%;
+            padding: 10px 12px;
+            color: var(--grafite-900);
+            background: var(--branco);
+            border: 1px solid var(--cinza-300);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .campo-formulario input,
+        .campo-formulario select {
+            min-height: 44px;
+        }
+
+        .campo-formulario textarea {
+            min-height: 92px;
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        .campo-formulario input:focus,
+        .campo-formulario select:focus,
+        .campo-formulario textarea:focus {
+            border-color: var(--vermelho-600);
+            box-shadow: 0 0 0 3px rgba(150, 24, 35, 0.12);
+        }
+
+        .campo-formulario input:disabled {
+            color: var(--cinza-500);
+            background: var(--cinza-100);
+            cursor: not-allowed;
+        }
+
+        .ajuda-pendencia {
+            margin: -2px 0 0;
+            padding: 10px 12px;
+            color: var(--azul);
+            background: var(--azul-claro);
+            border-left: 3px solid var(--azul);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .mensagem-pendencia {
+            min-height: 20px;
+            margin: 0;
+            color: var(--vermelho-600);
+            font-size: 0.78rem;
+            font-weight: 750;
+        }
+
+        .acoes-formulario-pendencia {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+        }
+
+        .lista-pendencias {
+            display: grid;
+            gap: 14px;
+        }
+
+        .pendencias-vazias {
+            padding: 34px 18px;
+            color: var(--cinza-500);
+            background: var(--cinza-50);
+            border: 1px dashed var(--cinza-300);
+            border-radius: 13px;
+            text-align: center;
+        }
+
+        .grupo-pendencias {
+            display: grid;
+            gap: 9px;
+        }
+
+        .grupo-pendencias h3 {
+            margin: 0;
+            padding: 9px 11px;
+            color: var(--grafite-900);
+            background: var(--cinza-100);
+            border-left: 4px solid var(--vermelho-600);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            text-transform: uppercase;
+        }
+
+        .pendencia-item {
+            padding: 13px;
+            background: var(--branco);
+            border: 1px solid var(--cinza-200);
+            border-radius: 11px;
+        }
+
+        .pendencia-item-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .pendencia-item-topo strong {
+            color: var(--grafite-950);
+            font-size: 0.9rem;
+        }
+
+        .pendencia-ordem {
+            color: var(--cinza-500);
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .pendencia-descricao,
+        .pendencia-medida {
+            margin: 8px 0 0;
+            color: var(--cinza-700);
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .pendencia-medida {
+            padding-top: 8px;
+            border-top: 1px solid var(--cinza-200);
+        }
+
+        .pendencia-medida span {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--cinza-500);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .acoes-pendencia {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            gap: 7px;
+        }
+
+        .acao-pendencia {
+            min-height: 34px;
+            padding: 0 10px;
+            color: var(--cinza-700);
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-300);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .acao-pendencia.remover {
+            color: var(--vermelho-600);
+            background: var(--vermelho-50);
+            border-color: #fda29b;
+        }
+
         @media (max-width: 720px) {
             .inventario-topo,
             .ferramentas-itens {
@@ -1510,6 +1703,14 @@
             .lista-bens {
                 grid-template-columns: 1fr;
                 max-height: 560px;
+            }
+
+            .pendencias-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .acoes-formulario-pendencia {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1690,6 +1891,63 @@
                     </div>
                 </section>
 
+                <section class="cartao" aria-labelledby="titulo-pendencias">
+                    <div class="cartao-corpo">
+                        <div class="inventario-topo">
+                            <div class="cabecalho-secao">
+                                <span class="numero-secao" aria-hidden="true">!</span>
+                                <div class="cabecalho-secao-texto">
+                                    <h2 id="titulo-pendencias" class="titulo-secao">Pendências do inventário</h2>
+                                    <p class="texto-apoio">Após a conferência, registre as divergências encontradas e as medidas adotadas para solucioná-las.</p>
+                                </div>
+                            </div>
+                            <span id="contador-pendencias" class="contador-itens">0 registros</span>
+                        </div>
+
+                        <div class="pendencias-layout">
+                            <form id="formulario-pendencia" class="formulario-pendencia" novalidate>
+                                <div class="campo-formulario">
+                                    <label for="tipo-pendencia">Tipo de pendência</label>
+                                    <select id="tipo-pendencia" required>
+                                        <option value="mapa_sem_secao">Consta no mapa carga, mas não está na seção</option>
+                                        <option value="secao_sem_mapa">Não consta no mapa carga, mas está na seção</option>
+                                        <option value="sem_patrimonio">Está na seção sem número de patrimônio</option>
+                                    </select>
+                                </div>
+
+                                <p id="ajuda-pendencia" class="ajuda-pendencia"></p>
+
+                                <div class="campo-formulario">
+                                    <label for="patrimonio-pendencia">Nº do patrimônio</label>
+                                    <input id="patrimonio-pendencia" type="text" list="lista-patrimonios" autocomplete="off" placeholder="Digite ou selecione o patrimônio">
+                                    <datalist id="lista-patrimonios"></datalist>
+                                </div>
+
+                                <div class="campo-formulario">
+                                    <label for="descricao-pendencia">Descrição do bem</label>
+                                    <textarea id="descricao-pendencia" required placeholder="Ex.: Mesa para escritório"></textarea>
+                                </div>
+
+                                <div class="campo-formulario">
+                                    <label for="medida-pendencia">Medidas adotadas e resultados alcançados</label>
+                                    <textarea id="medida-pendencia" placeholder="Ex.: Reiterado no Despacho 109960726"></textarea>
+                                </div>
+
+                                <p id="mensagem-pendencia" class="mensagem-pendencia" role="alert"></p>
+
+                                <div class="acoes-formulario-pendencia">
+                                    <button id="salvar-pendencia" class="botao primario" type="submit">Adicionar pendência</button>
+                                    <button id="cancelar-edicao-pendencia" class="botao secundario" type="button" hidden>Cancelar edição</button>
+                                </div>
+                            </form>
+
+                            <div id="lista-pendencias" class="lista-pendencias" aria-live="polite">
+                                <div class="pendencias-vazias">Nenhuma pendência registrada.</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section class="cartao finalizacao">
                     <div class="cartao-corpo">
                         <div class="cabecalho-secao">
@@ -1828,6 +2086,18 @@
         const contadorItens = document.getElementById("contador-itens");
         const buscaItens = document.getElementById("busca-itens");
         const botoesFiltro = [...document.querySelectorAll(".filtro-item")];
+        const formularioPendencia = document.getElementById("formulario-pendencia");
+        const tipoPendencia = document.getElementById("tipo-pendencia");
+        const patrimonioPendencia = document.getElementById("patrimonio-pendencia");
+        const descricaoPendencia = document.getElementById("descricao-pendencia");
+        const medidaPendencia = document.getElementById("medida-pendencia");
+        const ajudaPendencia = document.getElementById("ajuda-pendencia");
+        const mensagemPendencia = document.getElementById("mensagem-pendencia");
+        const salvarPendencia = document.getElementById("salvar-pendencia");
+        const cancelarEdicaoPendencia = document.getElementById("cancelar-edicao-pendencia");
+        const listaPendencias = document.getElementById("lista-pendencias");
+        const contadorPendencias = document.getElementById("contador-pendencias");
+        const listaPatrimonios = document.getElementById("lista-patrimonios");
 
         const botaoIniciar = document.getElementById("botao-iniciar");
         const botaoParar = document.getElementById("botao-parar");
@@ -1876,6 +2146,8 @@
         let horarioUltimoCodigoCamera = 0;
         let filtroItens = "todos";
         let termoBuscaItens = "";
+        let pendencias = [];
+        let pendenciaEmEdicao = null;
 
         let contextoAudio = null;
 
@@ -2062,6 +2334,231 @@
                     item.scrollIntoView({ behavior: "smooth", block: "nearest" });
                 }
             }
+        }
+
+        const TIPOS_PENDENCIA = {
+            mapa_sem_secao: {
+                titulo: "Material consta no mapa carga, mas não está na seção",
+                ajuda: "Selecione um patrimônio existente na planilha. A descrição do bem será preenchida automaticamente quando possível."
+            },
+            secao_sem_mapa: {
+                titulo: "Material não consta no mapa carga, mas está na seção",
+                ajuda: "Informe o patrimônio localizado fisicamente. Pela lógica desta opção, ele não pode constar na planilha carregada."
+            },
+            sem_patrimonio: {
+                titulo: "Material consta na seção sem número de patrimônio",
+                ajuda: "Descreva o bem encontrado. O campo de patrimônio fica desativado porque o material não possui identificação patrimonial."
+            }
+        };
+
+        function preencherListaPatrimonios() {
+            listaPatrimonios.innerHTML = "";
+            const fragmento = document.createDocumentFragment();
+
+            for (const registro of registros) {
+                const opcao = document.createElement("option");
+                opcao.value = registro.patrimonio;
+                opcao.label = textoCurto(registro.material, 70);
+                fragmento.append(opcao);
+            }
+
+            listaPatrimonios.append(fragmento);
+        }
+
+        function configurarLogicaPendencia() {
+            const tipo = tipoPendencia.value;
+            const semPatrimonio = tipo === "sem_patrimonio";
+
+            ajudaPendencia.textContent = TIPOS_PENDENCIA[tipo].ajuda;
+            patrimonioPendencia.disabled = semPatrimonio;
+            patrimonioPendencia.required = !semPatrimonio;
+
+            if (semPatrimonio) {
+                patrimonioPendencia.value = "";
+                patrimonioPendencia.placeholder = "Não se aplica a este tipo";
+            } else if (tipo === "mapa_sem_secao") {
+                patrimonioPendencia.placeholder = "Selecione um patrimônio da planilha";
+            } else {
+                patrimonioPendencia.placeholder = "Digite o patrimônio encontrado na seção";
+            }
+
+            mensagemPendencia.textContent = "";
+        }
+
+        function localizarRegistroPorPatrimonio(patrimonio) {
+            const chave = normalizarPatrimonio(patrimonio);
+            return registros.find((registro) => registro.chavePatrimonio === chave) || null;
+        }
+
+        function completarDescricaoPendencia() {
+            if (tipoPendencia.value !== "mapa_sem_secao") {
+                return;
+            }
+
+            const registro = localizarRegistroPorPatrimonio(patrimonioPendencia.value);
+            if (registro && !descricaoPendencia.value.trim()) {
+                descricaoPendencia.value = registro.material;
+            }
+        }
+
+        function limparFormularioPendencia() {
+            formularioPendencia.reset();
+            pendenciaEmEdicao = null;
+            salvarPendencia.textContent = "Adicionar pendência";
+            cancelarEdicaoPendencia.hidden = true;
+            mensagemPendencia.textContent = "";
+            configurarLogicaPendencia();
+        }
+
+        function validarPendencia() {
+            const tipo = tipoPendencia.value;
+            const patrimonio = patrimonioPendencia.value.trim();
+            const descricao = descricaoPendencia.value.trim();
+            const registroExistente = patrimonio ? localizarRegistroPorPatrimonio(patrimonio) : null;
+
+            if (tipo !== "sem_patrimonio" && !patrimonio) {
+                return "Informe o número do patrimônio.";
+            }
+
+            if (!descricao) {
+                return "Informe a descrição do bem.";
+            }
+
+            if (tipo === "mapa_sem_secao" && !registros.length) {
+                return "Carregue a planilha antes de registrar este tipo de pendência.";
+            }
+
+            if (tipo === "mapa_sem_secao" && !registroExistente) {
+                return "Este patrimônio não foi encontrado na planilha carregada.";
+            }
+
+            if (tipo === "secao_sem_mapa" && registroExistente) {
+                return "Este patrimônio já consta na planilha. Escolha o tipo ‘consta no mapa, mas não está na seção’.";
+            }
+
+            return "";
+        }
+
+        function renderizarPendencias() {
+            listaPendencias.innerHTML = "";
+            contadorPendencias.textContent = `${pendencias.length} ${pendencias.length === 1 ? "registro" : "registros"}`;
+
+            if (!pendencias.length) {
+                listaPendencias.innerHTML = '<div class="pendencias-vazias">Nenhuma pendência registrada.</div>';
+                return;
+            }
+
+            for (const [tipo, configuracao] of Object.entries(TIPOS_PENDENCIA)) {
+                const itens = pendencias.filter((pendencia) => pendencia.tipo === tipo);
+                if (!itens.length) continue;
+
+                const grupo = document.createElement("section");
+                grupo.className = "grupo-pendencias";
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = configuracao.titulo;
+                grupo.append(titulo);
+
+                itens.forEach((pendencia, indice) => {
+                    const item = document.createElement("article");
+                    item.className = "pendencia-item";
+
+                    const topo = document.createElement("div");
+                    topo.className = "pendencia-item-topo";
+
+                    const patrimonio = document.createElement("strong");
+                    patrimonio.textContent = pendencia.patrimonio
+                        ? `Patrimônio ${pendencia.patrimonio}`
+                        : "Sem número de patrimônio";
+
+                    const ordem = document.createElement("span");
+                    ordem.className = "pendencia-ordem";
+                    ordem.textContent = `Ordem ${String(indice + 1).padStart(2, "0")}`;
+                    topo.append(patrimonio, ordem);
+
+                    const descricao = document.createElement("p");
+                    descricao.className = "pendencia-descricao";
+                    descricao.textContent = pendencia.descricao;
+
+                    const medida = document.createElement("p");
+                    medida.className = "pendencia-medida";
+                    const rotuloMedida = document.createElement("span");
+                    rotuloMedida.textContent = "Medidas adotadas / resultados";
+                    medida.append(rotuloMedida, document.createTextNode(pendencia.medida || "Não informado"));
+
+                    const acoes = document.createElement("div");
+                    acoes.className = "acoes-pendencia";
+
+                    const editar = document.createElement("button");
+                    editar.type = "button";
+                    editar.className = "acao-pendencia";
+                    editar.textContent = "Editar";
+                    editar.addEventListener("click", () => editarPendencia(pendencia.id));
+
+                    const remover = document.createElement("button");
+                    remover.type = "button";
+                    remover.className = "acao-pendencia remover";
+                    remover.textContent = "Remover";
+                    remover.addEventListener("click", () => removerPendencia(pendencia.id));
+
+                    acoes.append(editar, remover);
+                    item.append(topo, descricao, medida, acoes);
+                    grupo.append(item);
+                });
+
+                listaPendencias.append(grupo);
+            }
+        }
+
+        function editarPendencia(id) {
+            const pendencia = pendencias.find((item) => item.id === id);
+            if (!pendencia) return;
+
+            pendenciaEmEdicao = id;
+            tipoPendencia.value = pendencia.tipo;
+            configurarLogicaPendencia();
+            patrimonioPendencia.value = pendencia.patrimonio;
+            descricaoPendencia.value = pendencia.descricao;
+            medidaPendencia.value = pendencia.medida;
+            salvarPendencia.textContent = "Salvar alterações";
+            cancelarEdicaoPendencia.hidden = false;
+            formularioPendencia.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        function removerPendencia(id) {
+            const pendencia = pendencias.find((item) => item.id === id);
+            if (!pendencia || !window.confirm("Deseja remover esta pendência?")) return;
+
+            pendencias = pendencias.filter((item) => item.id !== id);
+            if (pendenciaEmEdicao === id) limparFormularioPendencia();
+            renderizarPendencias();
+        }
+
+        function salvarRegistroPendencia(evento) {
+            evento.preventDefault();
+            const erro = validarPendencia();
+
+            if (erro) {
+                mensagemPendencia.textContent = erro;
+                return;
+            }
+
+            const dados = {
+                id: pendenciaEmEdicao || `${Date.now()}-${Math.random()}`,
+                tipo: tipoPendencia.value,
+                patrimonio: tipoPendencia.value === "sem_patrimonio" ? "" : patrimonioPendencia.value.trim(),
+                descricao: descricaoPendencia.value.trim(),
+                medida: medidaPendencia.value.trim()
+            };
+
+            if (pendenciaEmEdicao) {
+                pendencias = pendencias.map((item) => item.id === pendenciaEmEdicao ? dados : item);
+            } else {
+                pendencias.push(dados);
+            }
+
+            limparFormularioPendencia();
+            renderizarPendencias();
         }
 
         function atualizarIndicadores() {
@@ -2672,7 +3169,7 @@
                 return;
             }
 
-            if (historico.length && !window.confirm("Carregar outra planilha apagará a conferência atual. Continuar?")) {
+            if ((historico.length || pendencias.length) && !window.confirm("Carregar outra planilha apagará a conferência e as pendências atuais. Continuar?")) {
                 arquivoPlanilha.value = "";
                 return;
             }
@@ -2713,8 +3210,11 @@
                 }
 
                 nomeArquivo = arquivo.name;
+                pendencias = [];
                 construirMapa();
                 zerarConferencia();
+                preencherListaPatrimonios();
+                renderizarPendencias();
 
                 const duplicidades = quantidadeDuplicidadesPlanilha();
 
@@ -2841,13 +3341,34 @@
                 { INDICADOR: "Localizados", VALOR: localizados },
                 { INDICADOR: "Pendentes", VALOR: registros.length - localizados },
                 { INDICADOR: "Leituras repetidas", VALOR: totalRepetidas },
-                { INDICADOR: "Codigos nao cadastrados", VALOR: totalDesconhecidas }
+                { INDICADOR: "Codigos nao cadastrados", VALOR: totalDesconhecidas },
+                { INDICADOR: "Pendencias registradas", VALOR: pendencias.length }
             ];
+
+            const pendenciasExportacao = [];
+            for (const [tipo, configuracao] of Object.entries(TIPOS_PENDENCIA)) {
+                pendencias
+                    .filter((pendencia) => pendencia.tipo === tipo)
+                    .forEach((pendencia, indice) => {
+                        pendenciasExportacao.push({
+                            TIPO_PENDENCIA: configuracao.titulo.toUpperCase(),
+                            ORDEM: String(indice + 1).padStart(2, "0"),
+                            PATRIMONIO: pendencia.patrimonio,
+                            DESCRICAO_DO_BEM: pendencia.descricao,
+                            MEDIDAS_ADOTADAS_E_RESULTADOS_ALCANCADOS: pendencia.medida
+                        });
+                    });
+            }
 
             const workbook = window.XLSX.utils.book_new();
             const abaResultado = window.XLSX.utils.json_to_sheet(resultado);
             const abaLeituras = window.XLSX.utils.json_to_sheet(leituras);
             const abaResumo = window.XLSX.utils.json_to_sheet(resumo);
+            const abaPendencias = window.XLSX.utils.json_to_sheet(
+                pendenciasExportacao.length
+                    ? pendenciasExportacao
+                    : [{ TIPO_PENDENCIA: "", ORDEM: "", PATRIMONIO: "", DESCRICAO_DO_BEM: "", MEDIDAS_ADOTADAS_E_RESULTADOS_ALCANCADOS: "" }]
+            );
 
             abaResultado["!cols"] = [
                 { wch: 16 }, { wch: 12 }, { wch: 18 }, { wch: 16 },
@@ -2860,10 +3381,14 @@
             ];
 
             abaResumo["!cols"] = [{ wch: 28 }, { wch: 35 }];
+            abaPendencias["!cols"] = [
+                { wch: 62 }, { wch: 8 }, { wch: 18 }, { wch: 45 }, { wch: 70 }
+            ];
 
             window.XLSX.utils.book_append_sheet(workbook, abaResumo, "Resumo");
             window.XLSX.utils.book_append_sheet(workbook, abaResultado, "Resultado");
             window.XLSX.utils.book_append_sheet(workbook, abaLeituras, "Leituras");
+            window.XLSX.utils.book_append_sheet(workbook, abaPendencias, "Pendências");
 
             window.XLSX.writeFile(workbook, nomeResultado(), {
                 compression: true
@@ -2888,6 +3413,11 @@
         });
 
         ocultarRepetidas.addEventListener("change", renderizarHistorico);
+        formularioPendencia.addEventListener("submit", salvarRegistroPendencia);
+        tipoPendencia.addEventListener("change", configurarLogicaPendencia);
+        patrimonioPendencia.addEventListener("change", completarDescricaoPendencia);
+        patrimonioPendencia.addEventListener("blur", completarDescricaoPendencia);
+        cancelarEdicaoPendencia.addEventListener("click", limparFormularioPendencia);
 
         buscaItens.addEventListener("input", () => {
             termoBuscaItens = buscaItens.value.trim();
@@ -2914,6 +3444,9 @@
         window.addEventListener("pagehide", () => {
             leitor.destroy();
         });
+
+        configurarLogicaPendencia();
+        renderizarPendencias();
     </script>
 </body>
 </html>
