@@ -3,39 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#8f1118">
+    <meta name="theme-color" content="#7a1118">
+    <meta name="description" content="Sistema de conferência de carga patrimonial por QR Code com importação local de planilha.">
 
     <title>Conferência de Carga Patrimonial</title>
 
     <style>
         :root {
-            --vermelho: #b5121b;
-            --vermelho-escuro: #7d0c12;
-            --verde: #14823b;
-            --verde-claro: #e8f7ed;
-            --amarelo: #a45d00;
-            --amarelo-claro: #fff4dc;
-            --azul: #175cd3;
-            --azul-claro: #eaf2ff;
-            --cinza-50: #f7f8fa;
-            --cinza-100: #eef1f4;
-            --cinza-300: #cfd5dc;
-            --cinza-600: #667085;
-            --cinza-900: #202124;
+            color-scheme: light;
+            --vermelho-700: #7a1118;
+            --vermelho-600: #961823;
+            --vermelho-500: #b4232d;
+            --vermelho-50: #fff1f2;
+            --grafite-950: #10151c;
+            --grafite-900: #18202a;
+            --grafite-800: #27313d;
+            --cinza-700: #344054;
+            --cinza-600: #475467;
+            --cinza-500: #667085;
+            --cinza-300: #d0d5dd;
+            --cinza-200: #e4e7ec;
+            --cinza-100: #f2f4f7;
+            --cinza-50: #f8fafc;
             --branco: #ffffff;
+            --verde: #067647;
+            --verde-claro: #ecfdf3;
+            --amarelo: #b54708;
+            --amarelo-claro: #fffaeb;
+            --azul: #175cd3;
+            --azul-claro: #eff8ff;
+            --sombra: 0 14px 32px rgba(16, 24, 40, 0.08);
         }
 
         * {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
-            padding: 16px;
-            color: var(--cinza-900);
-            background: var(--cinza-100);
-            font-family: Arial, Helvetica, sans-serif;
+            color: var(--grafite-900);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(150, 24, 35, 0.08), transparent 30rem),
+                var(--cinza-100);
+            font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         button,
@@ -43,46 +59,250 @@
             font: inherit;
         }
 
-        .aplicacao {
-            width: 100%;
-            max-width: 760px;
+        button,
+        label {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .barra-superior {
+            height: 5px;
+            background: linear-gradient(90deg, var(--vermelho-700), var(--vermelho-500) 55%, #d45b61);
+        }
+
+        .cabecalho-site {
+            color: var(--branco);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 45%),
+                var(--grafite-950);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cabecalho-conteudo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: min(1180px, calc(100% - 40px));
+            min-height: 112px;
             margin: 0 auto;
+            gap: 28px;
         }
 
-        .cabecalho {
-            padding: 8px 4px 18px;
-            text-align: center;
+        .marca {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            gap: 16px;
         }
 
-        .cabecalho h1 {
-            margin: 0 0 7px;
-            color: var(--vermelho-escuro);
-            font-size: clamp(1.55rem, 5vw, 2rem);
+        .marca-simbolo {
+            display: grid;
+            flex: 0 0 auto;
+            width: 52px;
+            height: 52px;
+            place-items: center;
+            background: var(--vermelho-600);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            box-shadow: 0 9px 24px rgba(0, 0, 0, 0.24);
         }
 
-        .cabecalho p {
+        .marca-simbolo svg {
+            width: 27px;
+            height: 27px;
+        }
+
+        .marca-texto {
+            min-width: 0;
+        }
+
+        .marca-sobretitulo {
+            display: block;
+            margin-bottom: 5px;
+            color: #d0d5dd;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .marca h1 {
             margin: 0;
+            font-size: clamp(1.25rem, 2.7vw, 1.8rem);
+            line-height: 1.16;
+            letter-spacing: -0.025em;
+        }
+
+        .marca p {
+            margin: 6px 0 0;
+            color: #98a2b3;
+            font-size: 0.92rem;
+        }
+
+        .selo-local {
+            display: inline-flex;
+            align-items: center;
+            flex: 0 0 auto;
+            gap: 8px;
+            padding: 9px 12px;
+            color: #d1fadf;
+            background: rgba(6, 118, 71, 0.2);
+            border: 1px solid rgba(117, 224, 167, 0.26);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .selo-local::before {
+            width: 8px;
+            height: 8px;
+            content: "";
+            background: #47cd89;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(71, 205, 137, 0.12);
+        }
+
+        .aplicacao {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 28px 0 18px;
+        }
+
+        .etapas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin-bottom: 22px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--cinza-200);
+            border-radius: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .etapa {
+            display: flex;
+            align-items: center;
+            min-height: 64px;
+            padding: 12px 18px;
+            gap: 11px;
+            border-right: 1px solid var(--cinza-200);
+            transition: background 180ms ease, box-shadow 180ms ease;
+        }
+
+        .etapa:last-child {
+            border-right: 0;
+        }
+
+        .etapa.ativa {
+            background: var(--branco);
+            box-shadow: inset 0 -3px var(--vermelho-600);
+        }
+
+        .etapa.concluida .etapa-numero {
+            background: var(--verde);
+        }
+
+        .etapa:not(.ativa):not(.concluida) .etapa-numero {
             color: var(--cinza-600);
+            background: var(--cinza-200);
+        }
+
+        .etapa-numero,
+        .numero-secao {
+            display: grid;
+            flex: 0 0 auto;
+            place-items: center;
+            color: var(--branco);
+            background: var(--vermelho-600);
+            border-radius: 50%;
+            font-weight: 800;
+        }
+
+        .etapa-numero {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+
+        .etapa strong,
+        .etapa span {
+            display: block;
+        }
+
+        .etapa strong {
+            font-size: 0.85rem;
+        }
+
+        .etapa span {
+            margin-top: 2px;
+            color: var(--cinza-500);
+            font-size: 0.75rem;
+        }
+
+        .grade-trabalho {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
+            align-items: start;
+            gap: 22px;
+        }
+
+        .coluna-principal,
+        .coluna-lateral {
+            display: grid;
+            gap: 22px;
+            min-width: 0;
+        }
+
+        .coluna-lateral {
+            position: sticky;
+            top: 18px;
         }
 
         .cartao {
-            padding: 18px;
-            margin-bottom: 16px;
+            overflow: hidden;
             background: var(--branco);
-            border: 1px solid #e1e5ea;
-            border-radius: 16px;
-            box-shadow: 0 5px 18px rgba(22, 27, 29, 0.07);
+            border: 1px solid var(--cinza-200);
+            border-radius: 18px;
+            box-shadow: var(--sombra);
+        }
+
+        .cartao-corpo {
+            padding: 22px;
+        }
+
+        .cabecalho-secao {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 18px;
+        }
+
+        .numero-secao {
+            width: 34px;
+            height: 34px;
+            font-size: 0.86rem;
+        }
+
+        .cabecalho-secao-texto {
+            min-width: 0;
         }
 
         .titulo-secao {
-            margin: 0 0 6px;
-            font-size: 1.15rem;
+            margin: 0;
+            color: var(--grafite-900);
+            font-size: 1.08rem;
+            line-height: 1.3;
+            letter-spacing: -0.012em;
         }
 
         .texto-apoio {
-            margin: 0 0 14px;
-            color: var(--cinza-600);
-            line-height: 1.45;
+            margin: 5px 0 0;
+            color: var(--cinza-500);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .entrada-arquivo {
@@ -94,116 +314,230 @@
             white-space: nowrap;
         }
 
-        .botao,
         .rotulo-arquivo {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            min-height: 48px;
-            padding: 11px 16px;
-            border: 0;
-            border-radius: 10px;
-            font-weight: 700;
-            text-decoration: none;
+            min-height: 76px;
+            padding: 15px 17px;
+            gap: 14px;
+            color: var(--grafite-900);
+            background: var(--cinza-50);
+            border: 1.5px dashed #98a2b3;
+            border-radius: 13px;
             cursor: pointer;
-            transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+            transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
         }
 
-        .botao:active,
+        .rotulo-arquivo:hover,
+        .rotulo-arquivo:focus-within {
+            background: var(--vermelho-50);
+            border-color: var(--vermelho-500);
+            outline: none;
+        }
+
         .rotulo-arquivo:active {
-            transform: scale(0.98);
+            transform: scale(0.995);
         }
 
-        .botao:disabled {
-            cursor: not-allowed;
-            opacity: 0.46;
-        }
-
-        .primario,
-        .rotulo-arquivo {
-            color: var(--branco);
-            background: var(--vermelho);
-        }
-
-        .primario:hover:not(:disabled),
-        .rotulo-arquivo:hover {
-            background: var(--vermelho-escuro);
-        }
-
-        .secundario {
-            color: var(--cinza-900);
-            background: #e5e9ee;
-        }
-
-        .sucesso-botao {
-            color: var(--branco);
-            background: var(--verde);
-        }
-
-        .acoes-arquivo,
-        .acoes-camera,
-        .acoes-resultado {
+        .arquivo-icone {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            color: var(--vermelho-600);
+            background: var(--vermelho-50);
+            border-radius: 11px;
         }
 
-        .rotulo-arquivo {
-            grid-column: 1 / -1;
+        .arquivo-icone svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .arquivo-chamada strong,
+        .arquivo-chamada span {
+            display: block;
+        }
+
+        .arquivo-chamada strong {
+            font-size: 0.93rem;
+        }
+
+        .arquivo-chamada span {
+            margin-top: 3px;
+            color: var(--cinza-500);
+            font-size: 0.78rem;
         }
 
         .arquivo-info {
-            padding: 12px;
-            margin-top: 14px;
+            position: relative;
+            padding: 12px 14px 12px 37px;
+            margin-top: 12px;
             color: var(--cinza-600);
             background: var(--cinza-50);
-            border: 1px solid var(--cinza-300);
-            border-radius: 10px;
-            line-height: 1.45;
+            border: 1px solid var(--cinza-200);
+            border-radius: 11px;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .arquivo-info::before {
+            position: absolute;
+            top: 14px;
+            left: 15px;
+            width: 9px;
+            height: 9px;
+            content: "";
+            background: #98a2b3;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(152, 162, 179, 0.14);
         }
 
         .arquivo-info.ok {
-            color: #0d5f2a;
+            color: #05603a;
             background: var(--verde-claro);
-            border-color: #a8ddb8;
+            border-color: #abefc6;
+        }
+
+        .arquivo-info.ok::before {
+            background: #17b26a;
         }
 
         .arquivo-info.alerta {
-            color: #794600;
+            color: #93370d;
             background: var(--amarelo-claro);
-            border-color: #efcf91;
+            border-color: #fedf89;
+        }
+
+        .arquivo-info.alerta::before {
+            background: #f79009;
         }
 
         .arquivo-info.erro {
-            color: #8a1118;
-            background: #fff0f1;
-            border-color: #e6aeb2;
+            color: #912018;
+            background: #fef3f2;
+            border-color: #fecdca;
+        }
+
+        .arquivo-info.erro::before {
+            background: #f04438;
+        }
+
+        .resumo-cartao .cartao-corpo {
+            padding-bottom: 18px;
+        }
+
+        .resumo-cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 17px;
+            gap: 12px;
+        }
+
+        .resumo-cabecalho h2 {
+            margin: 0;
+            font-size: 1.03rem;
+        }
+
+        .resumo-cabecalho span {
+            padding: 5px 8px;
+            color: var(--cinza-600);
+            background: var(--cinza-100);
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .progresso-meta {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 12px;
+            color: var(--cinza-600);
+            font-size: 0.78rem;
+        }
+
+        .progresso-meta strong {
+            color: var(--grafite-900);
+        }
+
+        .trilha-progresso {
+            height: 8px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            background: var(--cinza-100);
+            border-radius: 999px;
+        }
+
+        .barra-progresso {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #079455, #17b26a);
+            border-radius: inherit;
+            transition: width 260ms ease;
         }
 
         .resumo {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
         }
 
         .indicador {
-            min-height: 90px;
-            padding: 12px;
+            position: relative;
+            min-height: 91px;
+            padding: 13px;
+            overflow: hidden;
             background: var(--cinza-50);
-            border: 1px solid #e0e5ea;
+            border: 1px solid var(--cinza-200);
             border-radius: 12px;
+        }
+
+        .indicador:first-child {
+            grid-column: 1 / -1;
+            min-height: 79px;
+            background: var(--grafite-900);
+            border-color: var(--grafite-900);
+        }
+
+        .indicador::after {
+            position: absolute;
+            right: -19px;
+            bottom: -25px;
+            width: 62px;
+            height: 62px;
+            content: "";
+            background: currentColor;
+            border-radius: 50%;
+            opacity: 0.055;
         }
 
         .indicador span {
             display: block;
             margin-bottom: 6px;
-            color: var(--cinza-600);
-            font-size: 0.82rem;
+            color: var(--cinza-500);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
         }
 
         .indicador strong {
             display: block;
-            font-size: 1.65rem;
+            color: var(--grafite-900);
+            font-size: 1.58rem;
+            line-height: 1;
+        }
+
+        .indicador:first-child span {
+            color: #98a2b3;
+        }
+
+        .indicador:first-child strong {
+            color: var(--branco);
         }
 
         .indicador.localizados strong {
@@ -211,7 +545,7 @@
         }
 
         .indicador.pendentes strong {
-            color: var(--vermelho);
+            color: var(--vermelho-600);
         }
 
         .indicador.repetidas strong {
@@ -225,137 +559,359 @@
         .visualizador {
             position: relative;
             width: 100%;
-            min-height: 330px;
+            min-height: 440px;
             overflow: hidden;
-            background: #111111;
-            border-radius: 13px;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at center, #26313e, #0c1117 70%);
+            border: 1px solid #303947;
+            border-radius: 15px;
         }
 
         video {
             display: block;
             width: 100%;
-            min-height: 330px;
+            min-height: 440px;
             object-fit: cover;
+        }
+
+        .camera-topo,
+        .camera-instrucao {
+            position: absolute;
+            z-index: 3;
+            left: 50%;
+            color: var(--branco);
+            background: rgba(12, 17, 23, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            transform: translateX(-50%);
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+        }
+
+        .camera-topo {
+            top: 14px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .camera-topo::before {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            margin-right: 7px;
+            content: "";
+            background: #f04438;
+            border-radius: 50%;
+        }
+
+        .camera-instrucao {
+            bottom: 16px;
+            width: max-content;
+            max-width: calc(100% - 28px);
+            padding: 9px 13px;
+            border-radius: 9px;
+            font-size: 0.75rem;
+            text-align: center;
         }
 
         .guia {
             position: absolute;
+            z-index: 2;
             top: 50%;
             left: 50%;
-            width: min(64vw, 250px);
-            height: min(64vw, 250px);
-            border: 3px solid rgba(255, 255, 255, 0.88);
-            border-radius: 20px;
+            width: min(60vw, 270px);
+            height: min(60vw, 270px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 24px;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0 0 9999px rgba(2, 6, 10, 0.3);
             pointer-events: none;
         }
 
         .guia::before,
         .guia::after {
             position: absolute;
-            width: 42px;
-            height: 42px;
+            width: 48px;
+            height: 48px;
             content: "";
-            border-color: #3bea7b;
+            border-color: #47cd89;
             border-style: solid;
+            filter: drop-shadow(0 0 5px rgba(71, 205, 137, 0.45));
         }
 
         .guia::before {
-            top: -5px;
-            left: -5px;
-            border-width: 6px 0 0 6px;
-            border-radius: 16px 0 0;
+            top: -4px;
+            left: -4px;
+            border-width: 5px 0 0 5px;
+            border-radius: 21px 0 0;
         }
 
         .guia::after {
-            right: -5px;
-            bottom: -5px;
-            border-width: 0 6px 6px 0;
-            border-radius: 0 0 16px;
+            right: -4px;
+            bottom: -4px;
+            border-width: 0 5px 5px 0;
+            border-radius: 0 0 21px;
         }
 
         .status-camera {
-            min-height: 26px;
-            margin: 14px 0;
+            position: relative;
+            min-height: 44px;
+            padding: 12px 13px 12px 37px;
+            margin: 12px 0 0;
             color: var(--cinza-600);
-            text-align: center;
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-200);
+            border-radius: 11px;
+            font-size: 0.84rem;
+            line-height: 1.4;
+        }
+
+        .status-camera::before {
+            position: absolute;
+            top: 17px;
+            left: 16px;
+            width: 8px;
+            height: 8px;
+            content: "";
+            background: #98a2b3;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(152, 162, 179, 0.14);
         }
 
         .status-camera.ok {
-            color: var(--verde);
+            color: #05603a;
+            background: var(--verde-claro);
+            border-color: #abefc6;
             font-weight: 700;
+        }
+
+        .status-camera.ok::before {
+            background: #17b26a;
         }
 
         .status-camera.alerta {
-            color: var(--amarelo);
+            color: #93370d;
+            background: var(--amarelo-claro);
+            border-color: #fedf89;
             font-weight: 700;
         }
 
+        .status-camera.alerta::before {
+            background: #f79009;
+        }
+
         .status-camera.erro {
-            color: var(--vermelho);
+            color: #912018;
+            background: #fef3f2;
+            border-color: #fecdca;
             font-weight: 700;
+        }
+
+        .status-camera.erro::before {
+            background: #f04438;
         }
 
         .opcoes {
             display: grid;
-            gap: 10px;
-            padding: 12px;
-            margin: 14px 0;
-            background: var(--cinza-50);
-            border-radius: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+            margin: 12px 0;
         }
 
         .opcao {
             display: flex;
             align-items: center;
+            min-height: 48px;
+            padding: 10px 12px;
             gap: 10px;
-            min-height: 34px;
+            color: var(--cinza-700);
+            background: var(--cinza-50);
+            border: 1px solid var(--cinza-200);
+            border-radius: 11px;
+            font-size: 0.8rem;
+            font-weight: 650;
             cursor: pointer;
         }
 
         .opcao input {
-            width: 20px;
+            position: relative;
+            flex: 0 0 auto;
+            width: 34px;
             height: 20px;
-            accent-color: var(--vermelho);
+            margin: 0;
+            appearance: none;
+            background: #98a2b3;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 150ms ease;
+        }
+
+        .opcao input::after {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 14px;
+            height: 14px;
+            content: "";
+            background: var(--branco);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.25);
+            transition: transform 150ms ease;
+        }
+
+        .opcao input:checked {
+            background: var(--vermelho-600);
+        }
+
+        .opcao input:checked::after {
+            transform: translateX(14px);
+        }
+
+        .opcao input:focus-visible {
+            outline: 3px solid rgba(23, 92, 211, 0.24);
+            outline-offset: 2px;
+        }
+
+        .botao {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 11px 15px;
+            gap: 8px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 750;
+            line-height: 1.2;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+            transition: transform 120ms ease, opacity 120ms ease, background 120ms ease, border-color 120ms ease;
+        }
+
+        .botao:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .botao:focus-visible,
+        .botao-pequeno:focus-visible,
+        .opcao-duplicidade:focus-visible {
+            outline: 3px solid rgba(23, 92, 211, 0.22);
+            outline-offset: 2px;
+        }
+
+        .botao:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+            box-shadow: none;
+        }
+
+        .primario {
+            color: var(--branco);
+            background: var(--vermelho-600);
+            border-color: var(--vermelho-600);
+        }
+
+        .primario:hover:not(:disabled) {
+            background: var(--vermelho-700);
+            border-color: var(--vermelho-700);
+        }
+
+        .secundario {
+            color: var(--cinza-700);
+            background: var(--branco);
+            border-color: var(--cinza-300);
+        }
+
+        .secundario:hover:not(:disabled) {
+            background: var(--cinza-50);
+        }
+
+        .sucesso-botao {
+            color: var(--branco);
+            background: var(--verde);
+            border-color: var(--verde);
+        }
+
+        .sucesso-botao:hover:not(:disabled) {
+            background: #05603a;
+        }
+
+        .acoes-camera,
+        .acoes-resultado {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+        }
+
+        .acoes-camera .primario {
+            grid-column: 1 / -1;
         }
 
         .ultimo-resultado {
-            min-height: 106px;
-            padding: 15px;
+            position: relative;
+            min-height: 112px;
+            padding: 17px 17px 17px 20px;
+            overflow: hidden;
             background: var(--cinza-50);
-            border: 1px solid var(--cinza-300);
-            border-left: 6px solid var(--cinza-300);
-            border-radius: 11px;
+            border: 1px solid var(--cinza-200);
+            border-left: 5px solid #98a2b3;
+            border-radius: 12px;
+        }
+
+        .ultimo-resultado::after {
+            position: absolute;
+            right: -24px;
+            bottom: -30px;
+            width: 86px;
+            height: 86px;
+            content: "";
+            background: currentColor;
+            border-radius: 50%;
+            opacity: 0.045;
         }
 
         .ultimo-resultado.ok {
+            color: #05603a;
             background: var(--verde-claro);
-            border-color: #a8ddb8;
+            border-color: #abefc6;
             border-left-color: var(--verde);
         }
 
         .ultimo-resultado.alerta {
+            color: #93370d;
             background: var(--amarelo-claro);
-            border-color: #efcf91;
+            border-color: #fedf89;
             border-left-color: var(--amarelo);
         }
 
         .ultimo-resultado.erro {
-            background: #fff0f1;
-            border-color: #e6aeb2;
-            border-left-color: var(--vermelho);
+            color: #912018;
+            background: #fef3f2;
+            border-color: #fecdca;
+            border-left-color: #d92d20;
         }
 
         .ultimo-resultado strong,
         .ultimo-resultado span {
+            position: relative;
+            z-index: 1;
             display: block;
         }
 
+        .ultimo-resultado strong {
+            font-size: 0.94rem;
+            line-height: 1.35;
+        }
+
         .ultimo-resultado span {
-            margin-top: 6px;
+            margin-top: 7px;
             color: var(--cinza-600);
-            line-height: 1.4;
+            font-size: 0.82rem;
+            line-height: 1.48;
         }
 
         .cabecalho-historico {
@@ -363,43 +919,54 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 13px;
         }
 
         .cabecalho-historico h2 {
             margin: 0;
+            font-size: 1.03rem;
         }
 
         .botao-pequeno {
-            min-height: 38px;
-            padding: 8px 11px;
-            border: 0;
-            border-radius: 9px;
-            color: var(--cinza-900);
-            background: #e5e9ee;
-            font-weight: 700;
+            min-height: 34px;
+            padding: 7px 9px;
+            color: var(--cinza-600);
+            background: var(--branco);
+            border: 1px solid var(--cinza-300);
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 750;
             cursor: pointer;
         }
 
         .historico {
             display: grid;
-            gap: 9px;
-            max-height: 440px;
+            gap: 8px;
+            max-height: 390px;
+            padding-right: 3px;
             overflow-y: auto;
+            scrollbar-color: #c6cbd3 transparent;
+            scrollbar-width: thin;
         }
 
         .historico-vazio {
+            display: grid;
+            min-height: 108px;
             padding: 20px;
-            color: var(--cinza-600);
+            place-items: center;
+            color: var(--cinza-500);
             text-align: center;
             background: var(--cinza-50);
-            border-radius: 10px;
+            border: 1px dashed var(--cinza-300);
+            border-radius: 11px;
+            font-size: 0.82rem;
         }
 
         .leitura {
-            padding: 12px;
+            padding: 11px 12px;
             background: var(--cinza-50);
-            border-left: 5px solid var(--cinza-300);
+            border: 1px solid var(--cinza-200);
+            border-left: 4px solid #98a2b3;
             border-radius: 9px;
         }
 
@@ -408,11 +975,11 @@
         }
 
         .leitura.repetido {
-            border-left-color: var(--amarelo);
+            border-left-color: #f79009;
         }
 
         .leitura.desconhecido {
-            border-left-color: var(--vermelho);
+            border-left-color: #d92d20;
         }
 
         .leitura.desfeito {
@@ -421,60 +988,111 @@
 
         .leitura-topo {
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 5px;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .leitura-topo strong {
+            font-size: 0.79rem;
+            line-height: 1.35;
         }
 
         .leitura small,
         .leitura p {
-            color: var(--cinza-600);
+            color: var(--cinza-500);
+        }
+
+        .leitura small {
+            flex: 0 0 auto;
+            font-size: 0.66rem;
         }
 
         .leitura p {
-            margin: 5px 0 0;
-            line-height: 1.35;
+            margin: 4px 0 0;
+            font-size: 0.75rem;
+            line-height: 1.42;
+        }
+
+        .finalizacao {
+            color: var(--branco);
+            background:
+                radial-gradient(circle at 100% 0%, rgba(150, 24, 35, 0.7), transparent 26rem),
+                var(--grafite-950);
+            border-color: var(--grafite-950);
+        }
+
+        .finalizacao .titulo-secao {
+            color: var(--branco);
+        }
+
+        .finalizacao .texto-apoio {
+            color: #b7c0cc;
+        }
+
+        .finalizacao .numero-secao {
+            background: var(--branco);
+            color: var(--vermelho-700);
+        }
+
+        .finalizacao .secundario {
+            color: var(--branco);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.24);
         }
 
         dialog {
-            width: min(92vw, 520px);
+            width: min(92vw, 540px);
             padding: 0;
-            border: 0;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+            color: var(--grafite-900);
+            background: var(--branco);
+            border: 1px solid var(--cinza-200);
+            border-radius: 18px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
         }
 
         dialog::backdrop {
-            background: rgba(0, 0, 0, 0.62);
+            background: rgba(12, 17, 23, 0.72);
+            backdrop-filter: blur(3px);
         }
 
         .dialogo-conteudo {
-            padding: 20px;
+            padding: 24px;
         }
 
         .dialogo-conteudo h2 {
             margin: 0 0 8px;
+            font-size: 1.2rem;
         }
 
         .dialogo-conteudo p {
+            margin: 0;
             color: var(--cinza-600);
+            font-size: 0.88rem;
+            line-height: 1.5;
         }
 
         .opcoes-duplicidade {
             display: grid;
             gap: 9px;
-            margin: 16px 0;
+            margin: 18px 0;
         }
 
         .opcao-duplicidade {
             width: 100%;
-            padding: 12px;
-            color: var(--cinza-900);
+            padding: 13px;
+            color: var(--grafite-900);
             text-align: left;
             background: var(--cinza-50);
             border: 1px solid var(--cinza-300);
             border-radius: 10px;
             cursor: pointer;
+        }
+
+        .opcao-duplicidade:hover {
+            background: var(--vermelho-50);
+            border-color: var(--vermelho-500);
         }
 
         .opcao-duplicidade strong,
@@ -485,189 +1103,696 @@
         .opcao-duplicidade span {
             margin-top: 5px;
             color: var(--cinza-600);
+            font-size: 0.8rem;
         }
 
         footer {
-            padding: 4px 0 16px;
-            color: var(--cinza-600);
-            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 21px 0 3px;
+            gap: 8px;
+            color: var(--cinza-500);
+            font-size: 0.76rem;
             text-align: center;
         }
 
-        @media (max-width: 540px) {
-            body {
-                padding: 10px;
+        footer::before {
+            width: 7px;
+            height: 7px;
+            content: "";
+            background: var(--verde);
+            border-radius: 50%;
+        }
+
+        @media (max-width: 900px) {
+            .grade-trabalho {
+                grid-template-columns: 1fr;
+            }
+
+            .coluna-lateral {
+                position: static;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .historico-cartao {
+                grid-column: 1 / -1;
+            }
+
+            .visualizador,
+            video {
+                min-height: 410px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .cabecalho-conteudo,
+            .aplicacao {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .cabecalho-conteudo {
+                min-height: 102px;
+            }
+
+            .marca {
+                gap: 12px;
+            }
+
+            .marca-simbolo {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+            }
+
+            .marca-simbolo svg {
+                width: 23px;
+                height: 23px;
+            }
+
+            .marca p,
+            .selo-local {
+                display: none;
+            }
+
+            .marca-sobretitulo {
+                font-size: 0.63rem;
+            }
+
+            .aplicacao {
+                padding-top: 16px;
+            }
+
+            .etapas {
+                margin-bottom: 14px;
+            }
+
+            .etapa {
+                justify-content: center;
+                min-height: 48px;
+                padding: 9px 6px;
+            }
+
+            .etapa div {
+                display: none;
+            }
+
+            .etapa-numero {
+                width: 26px;
+                height: 26px;
+            }
+
+            .grade-trabalho,
+            .coluna-principal,
+            .coluna-lateral {
+                gap: 14px;
+            }
+
+            .coluna-lateral {
+                grid-template-columns: 1fr;
+            }
+
+            .historico-cartao {
+                grid-column: auto;
             }
 
             .cartao {
-                padding: 14px;
+                border-radius: 15px;
             }
 
+            .cartao-corpo {
+                padding: 16px;
+            }
+
+            .cabecalho-secao {
+                margin-bottom: 14px;
+            }
+
+            .texto-apoio {
+                font-size: 0.84rem;
+            }
+
+            .visualizador,
+            video {
+                min-height: 350px;
+            }
+
+            .guia {
+                width: min(66vw, 245px);
+                height: min(66vw, 245px);
+            }
+
+            .opcoes,
             .acoes-camera,
             .acoes-resultado {
                 grid-template-columns: 1fr;
             }
 
-            .visualizador,
-            video {
-                min-height: 300px;
+            .acoes-camera .primario {
+                grid-column: auto;
+            }
+
+            .resumo {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .cabecalho-historico {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .botao-pequeno {
+                width: 100%;
+            }
+
+            .leitura-topo {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Relação visual dos bens carregados */
+        .inventario-cartao {
+            overflow: hidden;
+        }
+
+        .inventario-topo {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .inventario-topo .cabecalho-secao {
+            margin-bottom: 0;
+        }
+
+        .contador-itens {
+            flex: 0 0 auto;
+            padding: 7px 11px;
+            color: var(--cinza-700);
+            background: var(--cinza-100);
+            border: 1px solid var(--cinza-200);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .ferramentas-itens {
+            display: grid;
+            grid-template-columns: minmax(180px, 1fr) auto;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .busca-itens {
+            width: 100%;
+            min-height: 44px;
+            padding: 0 14px;
+            color: var(--grafite-900);
+            background: var(--branco);
+            border: 1px solid var(--cinza-300);
+            border-radius: 11px;
+            outline: none;
+        }
+
+        .busca-itens:focus {
+            border-color: var(--vermelho-600);
+            box-shadow: 0 0 0 3px rgba(150, 24, 35, 0.12);
+        }
+
+        .filtros-itens {
+            display: flex;
+            padding: 3px;
+            gap: 3px;
+            background: var(--cinza-100);
+            border: 1px solid var(--cinza-200);
+            border-radius: 11px;
+        }
+
+        .filtro-item {
+            min-height: 36px;
+            padding: 0 12px;
+            color: var(--cinza-600);
+            background: transparent;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .filtro-item.ativo {
+            color: var(--grafite-950);
+            background: var(--branco);
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12);
+        }
+
+        .lista-bens {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            max-height: 620px;
+            padding: 2px 4px 4px 2px;
+            gap: 12px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .lista-bens-vazia {
+            grid-column: 1 / -1;
+            padding: 34px 18px;
+            color: var(--cinza-500);
+            background: var(--cinza-50);
+            border: 1px dashed var(--cinza-300);
+            border-radius: 13px;
+            text-align: center;
+        }
+
+        .bem-item {
+            position: relative;
+            min-width: 0;
+            padding: 15px;
+            background: var(--branco);
+            border: 1px solid var(--cinza-200);
+            border-left: 5px solid var(--amarelo);
+            border-radius: 13px;
+            transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .bem-item.conferido {
+            background: var(--verde-claro);
+            border-color: #75e0a7;
+            border-left-color: var(--verde);
+        }
+
+        .bem-item.destaque-leitura {
+            animation: destacar-leitura 900ms ease;
+        }
+
+        @keyframes destacar-leitura {
+            0%, 100% { transform: scale(1); }
+            40% { transform: scale(1.025); box-shadow: 0 0 0 5px rgba(6, 118, 71, 0.16); }
+        }
+
+        .bem-cabecalho {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .bem-patrimonio {
+            display: block;
+            color: var(--grafite-950);
+            font-size: 1.05rem;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+        }
+
+        .bem-status {
+            display: inline-flex;
+            align-items: center;
+            flex: 0 0 auto;
+            min-height: 27px;
+            padding: 0 9px;
+            color: var(--amarelo);
+            background: var(--amarelo-claro);
+            border: 1px solid #fedf89;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .bem-item.conferido .bem-status {
+            color: var(--branco);
+            background: var(--verde);
+            border-color: var(--verde);
+        }
+
+        .bem-material {
+            margin: 10px 0 12px;
+            color: var(--grafite-800);
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.38;
+        }
+
+        .bem-dados {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin: 0;
+            gap: 9px 12px;
+        }
+
+        .bem-dado {
+            min-width: 0;
+        }
+
+        .bem-dado dt {
+            margin: 0 0 2px;
+            color: var(--cinza-500);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .bem-dado dd {
+            margin: 0;
+            overflow: hidden;
+            color: var(--cinza-700);
+            font-size: 0.8rem;
+            font-weight: 650;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bem-hora {
+            display: block;
+            margin-top: 11px;
+            color: var(--verde);
+            font-size: 0.72rem;
+            font-weight: 750;
+        }
+
+        @media (max-width: 720px) {
+            .inventario-topo,
+            .ferramentas-itens {
+                align-items: stretch;
+                grid-template-columns: 1fr;
+            }
+
+            .inventario-topo {
+                display: grid;
+            }
+
+            .contador-itens {
+                justify-self: start;
+            }
+
+            .filtros-itens {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .lista-bens {
+                grid-template-columns: 1fr;
+                max-height: 560px;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="barra-superior" aria-hidden="true"></div>
+
+    <header class="cabecalho-site">
+        <div class="cabecalho-conteudo">
+            <div class="marca">
+                <div class="marca-simbolo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <path d="M14 14h3v3h-3zM19 14h2M19 19h2v2h-4M14 19v2"></path>
+                    </svg>
+                </div>
+
+                <div class="marca-texto">
+                    <span class="marca-sobretitulo">Controle patrimonial</span>
+                    <h1>Conferência de Carga</h1>
+                    <p>Leitura rápida e validação por QR Code</p>
+                </div>
+            </div>
+
+            <span class="selo-local">Processamento local e seguro</span>
+        </div>
+    </header>
+
     <main class="aplicacao">
-        <header class="cabecalho">
-            <h1>Conferência de Carga Patrimonial</h1>
-            <p>Importação local da planilha e leitura por QR Code</p>
-        </header>
-
-        <section class="cartao">
-            <h2 class="titulo-secao">1. Carregar a planilha</h2>
-            <p class="texto-apoio">
-                Selecione a planilha no Google Drive, em Downloads ou nos arquivos do celular.
-                Os dados serão processados somente neste aparelho.
-            </p>
-
-            <div class="acoes-arquivo">
-                <label class="rotulo-arquivo" for="arquivo-planilha">
-                    Selecionar planilha
-                </label>
-
-                <input
-                    id="arquivo-planilha"
-                    class="entrada-arquivo"
-                    type="file"
-                    accept=".xlsx,.xls,.csv"
-                >
-            </div>
-
-            <div id="arquivo-info" class="arquivo-info">
-                Nenhuma planilha carregada.
-            </div>
-        </section>
-
-        <section class="cartao">
-            <h2 class="titulo-secao">Resumo da conferência</h2>
-
-            <div class="resumo">
-                <div class="indicador">
-                    <span>Total previsto</span>
-                    <strong id="total-previsto">0</strong>
-                </div>
-
-                <div class="indicador localizados">
-                    <span>Localizados</span>
-                    <strong id="total-localizados">0</strong>
-                </div>
-
-                <div class="indicador pendentes">
-                    <span>Pendentes</span>
-                    <strong id="total-pendentes">0</strong>
-                </div>
-
-                <div class="indicador repetidas">
-                    <span>Repetições</span>
-                    <strong id="total-repetidas">0</strong>
-                </div>
-
-                <div class="indicador desconhecidas">
-                    <span>Não cadastrados</span>
-                    <strong id="total-desconhecidas">0</strong>
+        <nav class="etapas" aria-label="Etapas da conferência">
+            <div id="etapa-preparar" class="etapa ativa">
+                <span class="etapa-numero">1</span>
+                <div>
+                    <strong>Preparar</strong>
+                    <span>Carregar planilha</span>
                 </div>
             </div>
-        </section>
 
-        <section class="cartao">
-            <h2 class="titulo-secao">2. Ler os QR Codes</h2>
-            <p class="texto-apoio">
-                O QR Code deve conter o número da coluna PATRIMONIO, com ou sem hífen.
-            </p>
-
-            <div class="visualizador">
-                <video id="video" playsinline muted></video>
-                <div class="guia" aria-hidden="true"></div>
+            <div id="etapa-conferir" class="etapa">
+                <span class="etapa-numero">2</span>
+                <div>
+                    <strong>Conferir</strong>
+                    <span>Ler os QR Codes</span>
+                </div>
             </div>
 
-            <p id="status-camera" class="status-camera" aria-live="polite">
-                Carregue uma planilha para liberar a câmera.
-            </p>
+            <div id="etapa-finalizar" class="etapa">
+                <span class="etapa-numero">3</span>
+                <div>
+                    <strong>Finalizar</strong>
+                    <span>Exportar resultado</span>
+                </div>
+            </div>
+        </nav>
 
-            <div class="opcoes">
-                <label class="opcao">
-                    <input id="som-ativo" type="checkbox" checked>
-                    Som de feedback
-                </label>
+        <div class="grade-trabalho">
+            <div class="coluna-principal">
+                <section class="cartao">
+                    <div class="cartao-corpo">
+                        <div class="cabecalho-secao">
+                            <span class="numero-secao" aria-hidden="true">1</span>
+                            <div class="cabecalho-secao-texto">
+                                <h2 class="titulo-secao">Carregar planilha patrimonial</h2>
+                                <p class="texto-apoio">
+                                    Selecione o arquivo no celular. Os dados permanecem neste aparelho e não são enviados ao site.
+                                </p>
+                            </div>
+                        </div>
 
-                <label class="opcao">
-                    <input id="ocultar-repetidas" type="checkbox" checked>
-                    Ocultar leituras repetidas no histórico
-                </label>
+                        <label class="rotulo-arquivo" for="arquivo-planilha">
+                            <span class="arquivo-icone" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <path d="M14 2v6h6M12 18v-6M9.5 14.5 12 12l2.5 2.5"></path>
+                                </svg>
+                            </span>
+                            <span class="arquivo-chamada">
+                                <strong>Selecionar planilha</strong>
+                                <span>Formatos aceitos: XLSX, XLS e CSV</span>
+                            </span>
+                            <input
+                                id="arquivo-planilha"
+                                class="entrada-arquivo"
+                                type="file"
+                                accept=".xlsx,.xls,.csv"
+                            >
+                        </label>
+
+                        <div id="arquivo-info" class="arquivo-info" aria-live="polite">
+                            Nenhuma planilha carregada.
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cartao inventario-cartao" aria-labelledby="titulo-itens">
+                    <div class="cartao-corpo">
+                        <div class="inventario-topo">
+                            <div class="cabecalho-secao">
+                                <span class="numero-secao" aria-hidden="true">✓</span>
+                                <div class="cabecalho-secao-texto">
+                                    <h2 id="titulo-itens" class="titulo-secao">Itens da carga</h2>
+                                    <p class="texto-apoio">A relação carregada aparece aqui. Cada leitura confirmada marca o bem em verde.</p>
+                                </div>
+                            </div>
+                            <span id="contador-itens" class="contador-itens">0 itens exibidos</span>
+                        </div>
+
+                        <div class="ferramentas-itens">
+                            <input id="busca-itens" class="busca-itens" type="search" placeholder="Buscar patrimônio, material ou placa/série" aria-label="Buscar item da carga" disabled>
+                            <div class="filtros-itens" role="group" aria-label="Filtrar itens">
+                                <button class="filtro-item ativo" type="button" data-filtro="todos">Todos</button>
+                                <button class="filtro-item" type="button" data-filtro="pendentes">Pendentes</button>
+                                <button class="filtro-item" type="button" data-filtro="conferidos">OK</button>
+                            </div>
+                        </div>
+
+                        <div id="lista-bens" class="lista-bens" aria-live="polite">
+                            <div class="lista-bens-vazia">Carregue uma planilha para visualizar os bens.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cartao">
+                    <div class="cartao-corpo">
+                        <div class="cabecalho-secao">
+                            <span class="numero-secao" aria-hidden="true">2</span>
+                            <div class="cabecalho-secao-texto">
+                                <h2 class="titulo-secao">Leitura dos QR Codes</h2>
+                                <p class="texto-apoio">
+                                    Aponte para a etiqueta. O código deve conter o número de PATRIMONIO, com ou sem hífen.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="visualizador">
+                            <video id="video" playsinline muted></video>
+                            <span class="camera-topo" aria-hidden="true">Leitor de patrimônio</span>
+                            <div class="guia" aria-hidden="true"></div>
+                            <span class="camera-instrucao" aria-hidden="true">Centralize o QR Code dentro da marcação</span>
+                        </div>
+
+                        <p id="status-camera" class="status-camera" aria-live="polite">
+                            Carregue uma planilha para liberar a câmera.
+                        </p>
+
+                        <div class="opcoes" aria-label="Preferências da leitura">
+                            <label class="opcao">
+                                <input id="som-ativo" type="checkbox" checked>
+                                <span>Som de confirmação</span>
+                            </label>
+
+                            <label class="opcao">
+                                <input id="ocultar-repetidas" type="checkbox" checked>
+                                <span>Ocultar repetições</span>
+                            </label>
+                        </div>
+
+                        <div class="acoes-camera">
+                            <button id="botao-iniciar" class="botao primario" type="button" disabled>
+                                Abrir câmera e iniciar conferência
+                            </button>
+
+                            <button id="botao-parar" class="botao secundario" type="button" disabled>
+                                Parar câmera
+                            </button>
+
+                            <button id="botao-lanterna" class="botao secundario" type="button" hidden>
+                                Ligar lanterna
+                            </button>
+
+                            <button id="botao-desfazer" class="botao secundario" type="button" disabled>
+                                Desfazer última leitura
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cartao finalizacao">
+                    <div class="cartao-corpo">
+                        <div class="cabecalho-secao">
+                            <span class="numero-secao" aria-hidden="true">3</span>
+                            <div class="cabecalho-secao-texto">
+                                <h2 class="titulo-secao">Concluir a conferência</h2>
+                                <p class="texto-apoio">
+                                    Gere uma nova planilha com itens localizados, pendentes, repetições e códigos não cadastrados.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="acoes-resultado">
+                            <button id="botao-exportar" class="botao sucesso-botao" type="button" disabled>
+                                Exportar resultado em Excel
+                            </button>
+
+                            <button id="botao-reiniciar" class="botao secundario" type="button" disabled>
+                                Reiniciar conferência
+                            </button>
+                        </div>
+                    </div>
+                </section>
             </div>
 
-            <div class="acoes-camera">
-                <button id="botao-iniciar" class="botao primario" type="button" disabled>
-                    Abrir câmera
-                </button>
+            <aside class="coluna-lateral" aria-label="Acompanhamento da conferência">
+                <section class="cartao resumo-cartao">
+                    <div class="cartao-corpo">
+                        <div class="resumo-cabecalho">
+                            <h2>Resumo da conferência</h2>
+                            <span>Em tempo real</span>
+                        </div>
 
-                <button id="botao-parar" class="botao secundario" type="button" disabled>
-                    Parar câmera
-                </button>
+                        <div class="progresso-meta">
+                            <strong>Progresso geral</strong>
+                            <span id="progresso-texto">0%</span>
+                        </div>
+                        <div class="trilha-progresso" role="progressbar" aria-label="Progresso da conferência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <span id="barra-progresso" class="barra-progresso"></span>
+                        </div>
 
-                <button id="botao-lanterna" class="botao secundario" type="button" hidden>
-                    Ligar lanterna
-                </button>
+                        <div class="resumo">
+                            <div class="indicador">
+                                <span>Total previsto</span>
+                                <strong id="total-previsto">0</strong>
+                            </div>
 
-                <button id="botao-desfazer" class="botao secundario" type="button" disabled>
-                    Desfazer última leitura
-                </button>
-            </div>
-        </section>
+                            <div class="indicador localizados">
+                                <span>Localizados</span>
+                                <strong id="total-localizados">0</strong>
+                            </div>
 
-        <section class="cartao">
-            <h2 class="titulo-secao">Última leitura</h2>
+                            <div class="indicador pendentes">
+                                <span>Pendentes</span>
+                                <strong id="total-pendentes">0</strong>
+                            </div>
 
-            <div id="ultimo-resultado" class="ultimo-resultado">
-                <strong>Nenhum QR Code identificado.</strong>
-                <span>O resultado aparecerá aqui.</span>
-            </div>
-        </section>
+                            <div class="indicador repetidas">
+                                <span>Repetições</span>
+                                <strong id="total-repetidas">0</strong>
+                            </div>
 
-        <section class="cartao">
-            <div class="cabecalho-historico">
-                <h2 class="titulo-secao">Histórico</h2>
+                            <div class="indicador desconhecidas">
+                                <span>Não cadastrados</span>
+                                <strong id="total-desconhecidas">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                <button id="botao-limpar-repetidas" class="botao-pequeno" type="button">
-                    Limpar repetições da lista
-                </button>
-            </div>
+                <section class="cartao">
+                    <div class="cartao-corpo">
+                        <div class="resumo-cabecalho">
+                            <h2>Última leitura</h2>
+                            <span>Retorno imediato</span>
+                        </div>
 
-            <div id="historico" class="historico">
-                <div class="historico-vazio">Nenhuma leitura realizada.</div>
-            </div>
-        </section>
+                        <div id="ultimo-resultado" class="ultimo-resultado" aria-live="assertive">
+                            <strong>Nenhum QR Code identificado.</strong>
+                            <span>O resultado da próxima leitura aparecerá aqui.</span>
+                        </div>
+                    </div>
+                </section>
 
-        <section class="cartao">
-            <h2 class="titulo-secao">3. Finalizar</h2>
-            <p class="texto-apoio">
-                O resultado será gerado em uma nova planilha, incluindo os itens localizados,
-                pendentes, leituras repetidas e códigos não cadastrados.
-            </p>
+                <section class="cartao historico-cartao">
+                    <div class="cartao-corpo">
+                        <div class="cabecalho-historico">
+                            <h2>Histórico de leituras</h2>
+                            <button id="botao-limpar-repetidas" class="botao-pequeno" type="button">
+                                Limpar repetições
+                            </button>
+                        </div>
 
-            <div class="acoes-resultado">
-                <button id="botao-exportar" class="botao sucesso-botao" type="button" disabled>
-                    Exportar resultado em Excel
-                </button>
-
-                <button id="botao-reiniciar" class="botao secundario" type="button" disabled>
-                    Reiniciar conferência
-                </button>
-            </div>
-        </section>
+                        <div id="historico" class="historico">
+                            <div class="historico-vazio">Nenhuma leitura realizada.</div>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </div>
 
         <footer>
-            A planilha é lida localmente e não é enviada ao site.
+            Leitura local: nenhum dado da planilha é enviado ou armazenado no site.
         </footer>
     </main>
 
@@ -675,13 +1800,13 @@
         <div class="dialogo-conteudo">
             <h2>Código duplicado na planilha</h2>
             <p>
-                O mesmo patrimônio aparece em mais de uma linha. Selecione qual registro está sendo conferido.
+                O mesmo patrimônio aparece em mais de uma linha. Selecione o registro correto para continuar.
             </p>
 
             <div id="opcoes-duplicidade" class="opcoes-duplicidade"></div>
 
             <button id="cancelar-duplicidade" class="botao secundario" type="button">
-                Cancelar
+                Cancelar seleção
             </button>
         </div>
     </dialog>
@@ -699,6 +1824,10 @@
         const statusCamera = document.getElementById("status-camera");
         const ultimoResultado = document.getElementById("ultimo-resultado");
         const historicoElemento = document.getElementById("historico");
+        const listaBens = document.getElementById("lista-bens");
+        const contadorItens = document.getElementById("contador-itens");
+        const buscaItens = document.getElementById("busca-itens");
+        const botoesFiltro = [...document.querySelectorAll(".filtro-item")];
 
         const botaoIniciar = document.getElementById("botao-iniciar");
         const botaoParar = document.getElementById("botao-parar");
@@ -716,6 +1845,13 @@
         const totalPendentes = document.getElementById("total-pendentes");
         const totalRepetidasElemento = document.getElementById("total-repetidas");
         const totalDesconhecidasElemento = document.getElementById("total-desconhecidas");
+        const progressoTexto = document.getElementById("progresso-texto");
+        const barraProgresso = document.getElementById("barra-progresso");
+        const trilhaProgresso = barraProgresso.parentElement;
+
+        const etapaPreparar = document.getElementById("etapa-preparar");
+        const etapaConferir = document.getElementById("etapa-conferir");
+        const etapaFinalizar = document.getElementById("etapa-finalizar");
 
         const dialogoDuplicidade = document.getElementById("dialogo-duplicidade");
         const opcoesDuplicidade = document.getElementById("opcoes-duplicidade");
@@ -738,6 +1874,8 @@
 
         let ultimoCodigoCamera = "";
         let horarioUltimoCodigoCamera = 0;
+        let filtroItens = "todos";
+        let termoBuscaItens = "";
 
         let contextoAudio = null;
 
@@ -806,14 +1944,148 @@
             ultimoResultado.append(forte, texto);
         }
 
+        function criarDadoBem(rotulo, valor) {
+            if (!String(valor ?? "").trim()) {
+                return null;
+            }
+
+            const grupo = document.createElement("div");
+            grupo.className = "bem-dado";
+
+            const termo = document.createElement("dt");
+            termo.textContent = rotulo;
+
+            const descricao = document.createElement("dd");
+            descricao.textContent = String(valor).trim();
+            descricao.title = String(valor).trim();
+
+            grupo.append(termo, descricao);
+            return grupo;
+        }
+
+        function registroCorrespondeBusca(registro) {
+            if (!termoBuscaItens) {
+                return true;
+            }
+
+            const conteudo = normalizarPatrimonio([
+                registro.patrimonio,
+                registro.material,
+                registro.placaSerie,
+                registro.codigoMaterial,
+                registro.destino,
+                registro.uo
+            ].join(" "));
+
+            return conteudo.includes(normalizarPatrimonio(termoBuscaItens));
+        }
+
+        function renderizarItens(registroDestacado = null) {
+            listaBens.innerHTML = "";
+
+            const visiveis = registros.filter((registro) => {
+                const atendeFiltro = filtroItens === "todos"
+                    || (filtroItens === "pendentes" && !registro.conferido)
+                    || (filtroItens === "conferidos" && registro.conferido);
+
+                return atendeFiltro && registroCorrespondeBusca(registro);
+            });
+
+            contadorItens.textContent = `${visiveis.length} ${visiveis.length === 1 ? "item exibido" : "itens exibidos"}`;
+
+            if (!registros.length) {
+                listaBens.innerHTML = '<div class="lista-bens-vazia">Carregue uma planilha para visualizar os bens.</div>';
+                return;
+            }
+
+            if (!visiveis.length) {
+                listaBens.innerHTML = '<div class="lista-bens-vazia">Nenhum item corresponde a este filtro.</div>';
+                return;
+            }
+
+            const fragmento = document.createDocumentFragment();
+
+            for (const registro of visiveis) {
+                const item = document.createElement("article");
+                item.className = `bem-item${registro.conferido ? " conferido" : ""}`;
+                item.id = `bem-${registro.indice}`;
+
+                const cabecalho = document.createElement("div");
+                cabecalho.className = "bem-cabecalho";
+
+                const patrimonio = document.createElement("strong");
+                patrimonio.className = "bem-patrimonio";
+                patrimonio.textContent = `Patrimônio ${registro.patrimonio}`;
+
+                const status = document.createElement("span");
+                status.className = "bem-status";
+                status.textContent = registro.conferido ? "✓ OK" : "Pendente";
+
+                cabecalho.append(patrimonio, status);
+
+                const material = document.createElement("p");
+                material.className = "bem-material";
+                material.textContent = registro.material || "Material sem descrição";
+
+                const dados = document.createElement("dl");
+                dados.className = "bem-dados";
+
+                [
+                    criarDadoBem("Placa / série", registro.placaSerie),
+                    criarDadoBem("Cód. material", registro.codigoMaterial),
+                    criarDadoBem("Destino", registro.destino),
+                    criarDadoBem("UO", registro.uo)
+                ].filter(Boolean).forEach((dado) => dados.append(dado));
+
+                item.append(cabecalho, material);
+
+                if (dados.children.length) {
+                    item.append(dados);
+                }
+
+                if (registro.conferidoEm) {
+                    const hora = document.createElement("small");
+                    hora.className = "bem-hora";
+                    hora.textContent = `Conferido em ${registro.conferidoEm}`;
+                    item.append(hora);
+                }
+
+                fragmento.append(item);
+            }
+
+            listaBens.append(fragmento);
+
+            if (registroDestacado) {
+                const item = document.getElementById(`bem-${registroDestacado.indice}`);
+                if (item) {
+                    item.classList.add("destaque-leitura");
+                    item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+            }
+        }
+
         function atualizarIndicadores() {
             const localizados = registros.filter((item) => item.conferido).length;
+            const temPlanilha = registros.length > 0;
+            const conferenciaCompleta = temPlanilha && localizados === registros.length;
+            const percentual = temPlanilha
+                ? Math.round((localizados / registros.length) * 100)
+                : 0;
 
             totalPrevisto.textContent = String(registros.length);
             totalLocalizados.textContent = String(localizados);
             totalPendentes.textContent = String(registros.length - localizados);
             totalRepetidasElemento.textContent = String(totalRepetidas);
             totalDesconhecidasElemento.textContent = String(totalDesconhecidas);
+            progressoTexto.textContent = `${percentual}%`;
+            barraProgresso.style.width = `${percentual}%`;
+            trilhaProgresso.setAttribute("aria-valuenow", String(percentual));
+
+            etapaPreparar.classList.toggle("ativa", !temPlanilha);
+            etapaPreparar.classList.toggle("concluida", temPlanilha);
+            etapaConferir.classList.toggle("ativa", temPlanilha && !conferenciaCompleta);
+            etapaConferir.classList.toggle("concluida", conferenciaCompleta);
+            etapaFinalizar.classList.toggle("ativa", conferenciaCompleta);
 
             botaoDesfazer.disabled = pilhaConferidos.length === 0;
         }
@@ -1029,6 +2301,10 @@
             registro.conferidoEm = formatarData(agora);
             registro.conferidoIso = agora.toISOString();
             registro.codigoLido = codigoLido;
+            registro.original.CONFERIDO = "SIM";
+            registro.original.RESULTADO_CONFERENCIA = "LOCALIZADO";
+            registro.original.DATA_HORA_CONFERENCIA = registro.conferidoEm;
+            registro.original.QR_LIDO = codigoLido;
 
             pilhaConferidos.push(registro);
 
@@ -1046,6 +2322,7 @@
             tocarSucesso();
             vibrar([45, 45, 85]);
             atualizarIndicadores();
+            renderizarItens(registro);
         }
 
         function registrarRepeticao(grupo, codigoLido) {
@@ -1372,6 +2649,10 @@
                 registro.conferidoEm = "";
                 registro.conferidoIso = "";
                 registro.codigoLido = "";
+                registro.original.CONFERIDO = "NAO";
+                registro.original.RESULTADO_CONFERENCIA = "PENDENTE";
+                registro.original.DATA_HORA_CONFERENCIA = "";
+                registro.original.QR_LIDO = "";
             }
 
             atualizarUltimoResultado(
@@ -1381,6 +2662,7 @@
 
             atualizarIndicadores();
             renderizarHistorico();
+            renderizarItens();
         }
 
         async function carregarPlanilha(evento) {
@@ -1447,8 +2729,10 @@
                 botaoIniciar.disabled = false;
                 botaoExportar.disabled = false;
                 botaoReiniciar.disabled = false;
+                buscaItens.disabled = false;
 
                 alterarStatusCamera("Planilha carregada. A câmera pode ser iniciada.", "ok");
+                renderizarItens();
             } catch (erro) {
                 registros = [];
                 mapaPatrimonios = new Map();
@@ -1459,9 +2743,11 @@
                 botaoIniciar.disabled = true;
                 botaoExportar.disabled = true;
                 botaoReiniciar.disabled = true;
+                buscaItens.disabled = true;
 
                 atualizarIndicadores();
                 alterarStatusCamera("Corrija a planilha e tente novamente.", "erro");
+                renderizarItens();
             }
         }
 
@@ -1481,6 +2767,10 @@
             registro.conferidoEm = "";
             registro.conferidoIso = "";
             registro.codigoLido = "";
+            registro.original.CONFERIDO = "NAO";
+            registro.original.RESULTADO_CONFERENCIA = "PENDENTE";
+            registro.original.DATA_HORA_CONFERENCIA = "";
+            registro.original.QR_LIDO = "";
 
             adicionarHistorico(
                 "DESFEITO",
@@ -1498,6 +2788,7 @@
             alterarStatusCamera("Última leitura desfeita.", "alerta");
             tocarRepetido();
             atualizarIndicadores();
+            renderizarItens(registro);
         }
 
         function limparRepetidasDaLista() {
@@ -1597,6 +2888,19 @@
         });
 
         ocultarRepetidas.addEventListener("change", renderizarHistorico);
+
+        buscaItens.addEventListener("input", () => {
+            termoBuscaItens = buscaItens.value.trim();
+            renderizarItens();
+        });
+
+        botoesFiltro.forEach((botao) => {
+            botao.addEventListener("click", () => {
+                filtroItens = botao.dataset.filtro;
+                botoesFiltro.forEach((item) => item.classList.toggle("ativo", item === botao));
+                renderizarItens();
+            });
+        });
 
         cancelarDuplicidade.addEventListener("click", () => {
             dialogoDuplicidade.close();
